@@ -305,41 +305,49 @@ function calcularMaximo() {
   const v = document.getElementById("variante2").value;
   const dev = parseFloat(document.getElementById("porDev2").value)/100;
 
-  let perUnit = {};
+  // ingredientes por 10 unidades
+  let per10 = {};
   for (let ing in comidas[c].base) {
-    perUnit[ing] = comidas[c].base[ing]*(1-dev);
+    let base = comidas[c].base[ing] * 10;  // ×10 por bloque
+    per10[ing] = base * (1 - dev);         // aplicar devolución
   }
 
   if (v.startsWith("a")) {
-    perUnit[energiaAvalon] = 90*(1-dev);
+    // Avaloniana siempre agrega energía
+    per10[energiaAvalon] = 90*10*(1-dev);
+
     let idx = parseInt(v.charAt(1));
-    if (idx>0) perUnit[salsas[idx]] = 90*(1-dev);
+    if (idx > 0) per10[salsas[idx]] = 90*10*(1-dev);
   } else {
     let idx = parseInt(v);
-    if (idx>0) perUnit[salsas[idx]] = 90*(1-dev);
+    if (idx > 0) per10[salsas[idx]] = 90*10*(1-dev);
   }
 
+  // inventario actual
   let inv = {};
-  for (let ing in perUnit) {
-    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value)||0;
+  for (let ing in per10) {
+    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value) || 0;
   }
 
-  let maxUnits = Infinity;
-  for (let ing in perUnit) {
-    let possible = Math.floor(inv[ing]/perUnit[ing]);
-    if (possible < maxUnits) maxUnits = possible;
+  // calcular cuántos bloques de 10 puedes hacer
+  let maxBlocks = Infinity;
+  for (let ing in per10) {
+    let possible = Math.floor(inv[ing] / per10[ing]);
+    if (possible < maxBlocks) maxBlocks = possible;
   }
-  if (!isFinite(maxUnits)) maxUnits = 0;
 
-  // ahora en múltiplos de 10
-  let maxByTen = Math.floor(maxUnits/10)*10;
+  if (!isFinite(maxBlocks)) maxBlocks = 0;
 
-  let out = `<b>👉 Puedes craftear hasta:</b><br><b>${maxByTen}</b> comidas (múltiplos de 10)<br><br>`;
-  for (let ing in perUnit) {
-    let used = perUnit[ing]*maxByTen;
+  // resultado en cantidad real (bloques * 10 unidades)
+  let maxUnits = maxBlocks * 10;
+
+  let out = `<b>👉 Puedes craftear hasta:</b><br><b>${maxUnits}</b> comidas (múltiplos de 10)<br><br>`;
+
+  for (let ing in per10) {
+    let used = per10[ing] * maxBlocks;
     let diff = inv[ing] - used;
-    if (diff>=0) out += `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`;
-    else out += `${ing}: 🔴 Falta ${Math.abs(diff).toFixed(2)}<br>`;
+    if (diff >= 0) out += `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`;
+    else out += `${ing}: 🔴 Te falta ${Math.abs(diff).toFixed(2)}<br>`;
   }
 
   document.getElementById("resultado2").innerHTML = out;
@@ -355,6 +363,7 @@ function calcularMaximo() {
 
 </body>
 </html>
+
 
 
 
