@@ -2,207 +2,151 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Comidas - Albion Online</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora Crafteo Comidas - Albion</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --gold: #ffb347;
-  --orange: #ff9800;
-  --bg-dark: rgba(25,25,25,0.78);
-}
-
-* {
-  box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
-}
-
 body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
-    url("778611.jpg") center/cover no-repeat fixed;
+  background: #111;
+  color: #eee;
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 16px;
-  color: #f5f5f5;
+  padding: 20px;
 }
-
-/* Contenedor principal */
 .container {
   width: 100%;
-  max-width: 420px;
-  background: var(--bg-dark);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
+  max-width: 640px;
+  background: #222;
   padding: 24px;
-  box-shadow: 0 0 40px rgba(255, 160, 60, 0.35);
-  animation: fadeIn 0.6s ease;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(255,160,0,0.25);
 }
-
-h2 {
-  text-align: center;
-  color: var(--gold);
-  margin-bottom: 18px;
-  font-size: 1.4rem;
-}
-
-/* Inputs */
-label {
-  font-size: 0.85rem;
-  margin-top: 12px;
-  display: block;
-  opacity: 0.9;
-}
-
-select, input {
+button {
   width: 100%;
   padding: 12px;
-  margin-top: 6px;
-  border-radius: 10px;
+  margin-top: 12px;
+  background: linear-gradient(135deg,#f90,#ffb347);
   border: none;
-  background: rgba(255,255,255,0.12);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #222;
+}
+button:hover { background: #ffb347; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: none;
+  background: #333;
   color: #fff;
   font-size: 0.95rem;
 }
-
-select option {
-  color: #000;
-}
-
-/* Checkbox */
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-/* Botón */
-button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 700;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, var(--orange), var(--gold));
-  color: #222;
-  cursor: pointer;
-}
-
-/* Resultado */
-#resultado {
-  margin-top: 18px;
-  padding: 14px;
-  background: rgba(0,0,0,0.45);
-  border-radius: 14px;
+label {
+  margin-top: 12px;
+  display: block;
   font-size: 0.9rem;
-  line-height: 1.6;
 }
-
-/* Firma */
-.firma {
-  position: fixed;
-  bottom: 10px;
-  right: 12px;
-  font-size: 0.7rem;
-  opacity: 0.75;
+.result {
+  background: rgba(0,0,0,0.5);
+  padding: 14px;
+  margin-top: 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
 }
-
-/* Animación */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* 💻 ESCRITORIO */
-@media (min-width: 768px) {
-  .container {
-    max-width: 460px;
-    padding: 30px;
-  }
-
-  h2 {
-    font-size: 1.6rem;
-  }
-
-  button {
-    font-size: 1.05rem;
-  }
-}
+.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
 <div class="container">
-  <h2>🍲 Calcular crafteo de Comidas</h2>
 
-  <label>Comida</label>
-  <select id="comida">
-    <option value="tortilla">Tortilla de Cerdo</option>
-    <option value="pastel">Pastel de Cerdo</option>
-    <option value="guiso">Guiso de Ternera</option>
-  </select>
+  <h2 style="text-align:center;color:#ffb347;">🧮 Calculadora crafteo de comidas</h2>
 
-  <label>Variante</label>
-  <select id="variante">
-    <option value="0">Plana</option>
-    <option value="1">.1</option>
-    <option value="2">.2</option>
-    <option value="3">.3</option>
-  </select>
+  <button id="btnCantidad">📌 Calcular por cantidad</button>
+  <button id="btnInventario">📦 Calcular según inventario</button>
 
-<div class="checkbox">
-  <label class="checkbox-label">
-    <input type="checkbox" id="avalon">
-    <span>Avaloniana</span>
-  </label>
+  <!-- SECCIÓN 1 -->
+  <div id="section-cantidad" class="section">
+    <label>Comida</label>
+    <select id="comida1">
+      <option value="tortilla">Tortilla de cerdo</option>
+      <option value="pastel">Pastel de cerdo</option>
+      <option value="guiso">Guiso de ternera</option>
+    </select>
+
+    <label>Variante</label>
+    <select id="variante1">
+      <option value="0">Plana</option>
+      <option value="1">.1</option>
+      <option value="2">.2</option>
+      <option value="3">.3</option>
+      <option value="a0">Avaloniana plana</option>
+      <option value="a1">Avaloniana .1</option>
+      <option value="a2">Avaloniana .2</option>
+      <option value="a3">Avaloniana .3</option>
+    </select>
+
+    <label>Cantidad a fabricar (múltiplos de 10)</label>
+    <input type="number" id="cantFabricar1" placeholder="Ej: 10">
+
+    <label>% Devolución</label>
+    <input type="number" id="porDev1" placeholder="Ej: 35">
+
+    <button onclick="calcularPorCantidad()">🔍 Calcular ingredientes</button>
+    <div id="resultado1" class="result"></div>
+  </div>
+
+  <!-- SECCIÓN 2 -->
+  <div id="section-inventario" class="section hidden">
+
+    <label>Comida</label>
+    <select id="comida2">
+      <option value="tortilla">Tortilla de cerdo</option>
+      <option value="pastel">Pastel de cerdo</option>
+      <option value="guiso">Guiso de ternera</option>
+    </select>
+
+    <label>Variante</label>
+    <select id="variante2">
+      <option value="0">Plana</option>
+      <option value="1">.1</option>
+      <option value="2">.2</option>
+      <option value="3">.3</option>
+      <option value="a0">Avaloniana plana</option>
+      <option value="a1">Avaloniana .1</option>
+      <option value="a2">Avaloniana .2</option>
+      <option value="a3">Avaloniana .3</option>
+    </select>
+
+    <label>% Devolución</label>
+    <input type="number" id="porDev2" placeholder="Ej: 35">
+
+    <div id="invInputs"></div>
+
+    <button onclick="calcularMaximo()">🔢 ¿Cuántas puedes craftear?</button>
+    <div id="resultado2" class="result"></div>
+
+  </div>
+
 </div>
-
-
-  <label>Cantidad</label>
-  <input type="number" id="cantidad" placeholder="Ej: 100">
-
-  <label>% Devolución</label>
-  <input type="number" id="devolucion" placeholder="Ej: 35">
-
-  <button onclick="calcular()">Calcular</button>
-
-  <div id="resultado"></div>
-</div>
-
-<div class="firma">Creado por BLOODYPHANTOM</div>
 
 <script>
+// ► Datos de ingredientes
 const comidas = {
   tortilla: {
-    base: {
-      "Fardos de maíz": 36,
-      "Carne de cerdo": 72,
-      "Huevos de ganso": 18
-    }
+    base: { "Fardos de maíz": 36, "Carne de cerdo": 72, "Huevos de ganso": 18 }
   },
   pastel: {
-    base: {
-      "Fardos de maíz": 18,
-      "Harina": 36,
-      "Carne de cerdo": 72,
-      "Leche de oveja": 18
-    }
+    base: { "Fardos de maíz": 18, "Harina": 36, "Carne de cerdo": 72, "Leche de oveja": 18 }
   },
   guiso: {
-    base: {
-      "Calabazas": 36,
-      "Pan": 36,
-      "Carne de ternera": 72
-    }
+    base: { "Calabazas": 36, "Pan": 36, "Carne de ternera": 72 }
   }
 };
 
@@ -211,43 +155,152 @@ const salsas = {
   2: "Salsa de pescado extravagante",
   3: "Salsa de pescado especial"
 };
+const energiaAvalon = "Energía avaloniana";
 
-function calcular() {
-  const comida = comidaEl.value;
-  const variante = Number(varianteEl.value);
-  const avalon = avalonEl.checked;
-  const cantidad = Number(cantidadEl.value);
-  const devolucion = Number(devolucionEl.value) / 100;
+// ► Mostrar Inventario Inputs al cambiar selección
+document.getElementById("comida2").addEventListener("change", generarInventarioInputs);
+document.getElementById("variante2").addEventListener("change", generarInventarioInputs);
 
-  let ingredientes = {};
+// ► Botones de navegación
+document.getElementById("btnCantidad").onclick = () => showSection('cantidad');
+document.getElementById("btnInventario").onclick = () => showSection('inventario');
 
-  for (let ing in comidas[comida].base) {
-    ingredientes[ing] = comidas[comida].base[ing] * cantidad;
-  }
+// ► Mostramos "Por cantidad" por defecto al cargar
+showSection('cantidad');
 
-  if (variante > 0) {
-    ingredientes[salsas[variante]] = 90 * cantidad;
-  }
+// ► Funciones internas
 
-  if (avalon && variante === 0) {
-    ingredientes["Energía avaloniana"] = 90 * cantidad;
-  }
+function showSection(name) {
+  document.getElementById("section-cantidad").classList.add("hidden");
+  document.getElementById("section-inventario").classList.add("hidden");
+  document.getElementById("resultado1").innerHTML = "";
+  document.getElementById("resultado2").innerHTML = "";
+  document.getElementById("section-" + name).classList.remove("hidden");
 
-  let html = "";
-  for (let ing in ingredientes) {
-    html += `• ${ing}: <b>${(ingredientes[ing] * (1 - devolucion)).toFixed(2)}</b><br>`;
-  }
-
-  resultado.innerHTML = html;
+  if (name === "inventario") generarInventarioInputs();
 }
 
-const comidaEl = document.getElementById("comida");
-const varianteEl = document.getElementById("variante");
-const avalonEl = document.getElementById("avalon");
-const cantidadEl = document.getElementById("cantidad");
-const devolucionEl = document.getElementById("devolucion");
-const resultado = document.getElementById("resultado");
+function enMultiplo10(n) {
+  return n > 0 && n % 10 === 0;
+}
+
+function calcularPorCantidad() {
+  const c = document.getElementById("comida1").value;
+  const v = document.getElementById("variante1").value;
+  const cantidad = parseInt(document.getElementById("cantFabricar1").value);
+  const dev = parseFloat(document.getElementById("porDev1").value)/100;
+
+  if (!enMultiplo10(cantidad)) {
+    document.getElementById("resultado1").innerHTML = "<b>❌ Ingresa un múltiplo de 10</b>";
+    return;
+  }
+
+  let req = {};
+  for (let ing in comidas[c].base) {
+    req[ing] = comidas[c].base[ing]*cantidad;
+  }
+
+  if (v.startsWith("a")) {
+    req[energiaAvalon] = 90*cantidad;
+    let idx = parseInt(v.charAt(1));
+    if (idx > 0) req[salsas[idx]] = 90*cantidad;
+  } else {
+    let idx = parseInt(v);
+    if (idx>0) req[salsas[idx]] = 90*cantidad;
+  }
+
+  let out = "<b>Ingredientes necesarios</b><br>";
+  for (let ing in req) {
+    let real = req[ing]*(1-dev);
+    out += `${ing}: <b>${real.toFixed(2)}</b><br>`;
+  }
+  document.getElementById("resultado1").innerHTML = out;
+}
+
+function generarInventarioInputs() {
+  const cont = document.getElementById("invInputs");
+  cont.innerHTML = "";
+
+  const c = document.getElementById("comida2").value;
+  const v = document.getElementById("variante2").value;
+
+  for (let ing in comidas[c].base) {
+    let inp = document.createElement("input");
+    inp.placeholder = ing + " que tienes";
+    inp.id = "inv_"+ing;
+    cont.appendChild(inp);
+  }
+
+  if (v.startsWith("a")) {
+    let invE = document.createElement("input");
+    invE.placeholder = energiaAvalon + " que tienes";
+    invE.id = "inv_"+energiaAvalon;
+    cont.appendChild(invE);
+
+    let idx = parseInt(v.charAt(1));
+    if (idx>0) {
+      let invS = document.createElement("input");
+      invS.placeholder = salsas[idx]+" que tienes";
+      invS.id = "inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  } else {
+    let idx = parseInt(v);
+    if (idx>0) {
+      let invS = document.createElement("input");
+      invS.placeholder = salsas[idx]+" que tienes";
+      invS.id = "inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  }
+}
+
+function calcularMaximo() {
+  const c = document.getElementById("comida2").value;
+  const v = document.getElementById("variante2").value;
+  const dev = parseFloat(document.getElementById("porDev2").value)/100;
+
+  let perUnit = {};
+  for (let ing in comidas[c].base) {
+    perUnit[ing] = comidas[c].base[ing]*(1-dev);
+  }
+
+  if (v.startsWith("a")) {
+    perUnit[energiaAvalon] = 90*(1-dev);
+    let idx = parseInt(v.charAt(1));
+    if (idx>0) perUnit[salsas[idx]] = 90*(1-dev);
+  } else {
+    let idx = parseInt(v);
+    if (idx>0) perUnit[salsas[idx]] = 90*(1-dev);
+  }
+
+  let inv = {};
+  for (let ing in perUnit) {
+    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value)||0;
+  }
+
+  let maxUnits = Infinity;
+  for (let ing in perUnit) {
+    let possible = Math.floor(inv[ing]/perUnit[ing]);
+    if (possible < maxUnits) maxUnits = possible;
+  }
+  if (!isFinite(maxUnits)) maxUnits = 0;
+
+  // ahora en múltiplos de 10
+  let maxByTen = Math.floor(maxUnits/10)*10;
+
+  let out = `<b>👉 Puedes craftear hasta:</b><br><b>${maxByTen}</b> comidas (múltiplos de 10)<br><br>`;
+  for (let ing in perUnit) {
+    let used = perUnit[ing]*maxByTen;
+    let diff = inv[ing] - used;
+    if (diff>=0) out += `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`;
+    else out += `${ing}: 🔴 Falta ${Math.abs(diff).toFixed(2)}<br>`;
+  }
+
+  document.getElementById("resultado2").innerHTML = out;
+}
 </script>
 
 </body>
 </html>
+
