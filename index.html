@@ -186,7 +186,8 @@ label {
 </div>
 
 <script>
-// ► Datos de ingredientes
+<script>
+// === Datos base de comidas ===
 const comidas = {
   tortilla: {
     base: { "Fardos de maíz": 36, "Carne de cerdo": 72, "Huevos de ganso": 18 }
@@ -204,166 +205,126 @@ const salsas = {
   2: "Salsa de pescado extravagante",
   3: "Salsa de pescado especial"
 };
+
 const energiaAvalon = "Energía avaloniana";
 
-// ► Mostrar Inventario Inputs al cambiar selección
-document.getElementById("comida2").addEventListener("change", generarInventarioInputs);
-document.getElementById("variante2").addEventListener("change", generarInventarioInputs);
-
-// ► Botones de navegación
-document.getElementById("btnCantidad").onclick = () => showSection('cantidad');
-document.getElementById("btnInventario").onclick = () => showSection('inventario');
-
-// ► Mostramos "Por cantidad" por defecto al cargar
-showSection('cantidad');
-
-// ► Funciones internas
-
-function showSection(name) {
-  document.getElementById("section-cantidad").classList.add("hidden");
-  document.getElementById("section-inventario").classList.add("hidden");
-  document.getElementById("resultado1").innerHTML = "";
-  document.getElementById("resultado2").innerHTML = "";
-  document.getElementById("section-" + name).classList.remove("hidden");
-
-  if (name === "inventario") generarInventarioInputs();
-}
-
-function enMultiplo10(n) {
-  return n > 0 && n % 10 === 0;
-}
-
-function calcularPorCantidad() {
-  const c = document.getElementById("comida1").value;
-  const v = document.getElementById("variante1").value;
-  const cantidad = parseInt(document.getElementById("cantFabricar1").value);
-  const dev = parseFloat(document.getElementById("porDev1").value)/100;
-
-  if (!enMultiplo10(cantidad)) {
-    document.getElementById("resultado1").innerHTML = "<b>❌ Ingresa un múltiplo de 10</b>";
-    return;
-  }
-
-  let req = {};
-  for (let ing in comidas[c].base) {
-    req[ing] = comidas[c].base[ing]*cantidad;
-  }
-
-  if (v.startsWith("a")) {
-    req[energiaAvalon] = 90*cantidad;
-    let idx = parseInt(v.charAt(1));
-    if (idx > 0) req[salsas[idx]] = 90*cantidad;
-  } else {
-    let idx = parseInt(v);
-    if (idx>0) req[salsas[idx]] = 90*cantidad;
-  }
-
-  let out = "<b>Ingredientes necesarios</b><br>";
-  for (let ing in req) {
-    let real = req[ing]*(1-dev);
-    out += `${ing}: <b>${real.toFixed(2)}</b><br>`;
-  }
-  document.getElementById("resultado1").innerHTML = out;
-}
-
+// === Genera inputs de inventario según lo seleccionado ===
 function generarInventarioInputs() {
-  const cont = document.getElementById("invInputs");
+  const cont = document.getElementById("inventarioInputs");
   cont.innerHTML = "";
 
-  const c = document.getElementById("comida2").value;
-  const v = document.getElementById("variante2").value;
+  const comida = document.getElementById("comidaInv").value;
+  const variante = document.getElementById("varianteInv").value;
 
-  for (let ing in comidas[c].base) {
+  // Ingredientes base
+  for (let ing in comidas[comida].base) {
     let inp = document.createElement("input");
-    inp.placeholder = ing + " que tienes";
-    inp.id = "inv_"+ing;
+    inp.type = "number";
+    inp.placeholder = `${ing} que tienes`;
+    inp.id = "inv_" + ing;
     cont.appendChild(inp);
   }
 
-  if (v.startsWith("a")) {
+  // Si es variante Avaloniana
+  if (variante.startsWith("a")) {
     let invE = document.createElement("input");
-    invE.placeholder = energiaAvalon + " que tienes";
-    invE.id = "inv_"+energiaAvalon;
+    invE.type = "number";
+    invE.placeholder = `${energiaAvalon} que tienes`;
+    invE.id = "inv_" + energiaAvalon;
     cont.appendChild(invE);
 
-    let idx = parseInt(v.charAt(1));
-    if (idx>0) {
+    let idx = parseInt(variante.charAt(1));
+    if (idx > 0) {
       let invS = document.createElement("input");
-      invS.placeholder = salsas[idx]+" que tienes";
-      invS.id = "inv_"+salsas[idx];
+      invS.type = "number";
+      invS.placeholder = `${salsas[idx]} que tienes`;
+      invS.id = "inv_" + salsas[idx];
       cont.appendChild(invS);
     }
   } else {
-    let idx = parseInt(v);
-    if (idx>0) {
+    let idx = parseInt(variante);
+    if (idx > 0) {
       let invS = document.createElement("input");
-      invS.placeholder = salsas[idx]+" que tienes";
-      invS.id = "inv_"+salsas[idx];
+      invS.type = "number";
+      invS.placeholder = `${salsas[idx]} que tienes`;
+      invS.id = "inv_" + salsas[idx];
       cont.appendChild(invS);
     }
   }
 }
 
-function calcularMaximoConSimulacion(inventario, comida, variante, devolucion) {
-  // Ingredientes base por unidad
-  const base = comidas[comida].base;
-  const newInv = Object.assign({}, inventario);
+// Detecta cuando cambia selección para regenerar inputs
+document.getElementById("comidaInv").addEventListener("change", generarInventarioInputs);
+document.getElementById("varianteInv").addEventListener("change", generarInventarioInputs);
 
-  // Convertimos devolución a proporción
-  const rrr = (1 - devolucion);
+// Llama la primera vez para generar inputs iniciales
+generarInventarioInputs();
 
-  let bloques = 0;
+// === Cálculo según inventario ===
+function calcularInventario() {
+  const comida = document.getElementById("comidaInv").value;
+  const variante = document.getElementById("varianteInv").value;
+  const dev = parseFloat(document.getElementById("devInv").value) / 100;
 
-  // Creamos función para costo de un bloque de 10
-  function costoPorBloque(inv, comida, variante) {
-    let costo = {};
+  // Ingredientes totales por unidad
+  let reqPerUnit = {};
 
-    // Ingredientes base
-    for (let ing in comidas[comida].base) {
-      costo[ing] = comidas[comida].base[ing] * 10;
-    }
-
-    // Salsas o energía
-    if (variante.startsWith("a")) {
-      // Avaloniana
-      costo["Energía avaloniana"] = 90 * 10;
-      let idx = parseInt(variante.charAt(1));
-      if (idx > 0) costo[salsas[idx]] = 90 * 10;
-    } else {
-      let idx = parseInt(variante);
-      if (idx > 0) costo[salsas[idx]] = 90 * 10;
-    }
-    return costo;
+  for (let ing in comidas[comida].base) {
+    reqPerUnit[ing] = comidas[comida].base[ing];
   }
 
-  const costBloque = costoPorBloque(newInv, comida, variante);
-
-  // Simulación
-  while(true) {
-    // Check if can afford another bloque
-    let puede = true;
-    for (let ing in costBloque) {
-      if ((newInv[ing] || 0) < costBloque[ing] * rrr) {
-        puede = false;
-        break;
-      }
-    }
-    if (!puede) break;
-
-    // Deduce costo neto
-    for (let ing in costBloque) {
-      let deducido = costBloque[ing] * rrr;
-      newInv[ing] -= deducido;
-
-      // Devuelve parcialmente
-      newInv[ing] += costBloque[ing] * devolucion;
-    }
-
-    bloques++;
+  if (variante.startsWith("a")) {
+    reqPerUnit[energiaAvalon] = 90;
+    let idx = parseInt(variante.charAt(1));
+    if (idx > 0) reqPerUnit[salsas[idx]] = 90;
+  } else {
+    let idx = parseInt(variante);
+    if (idx > 0) reqPerUnit[salsas[idx]] = 90;
   }
 
-  return bloques * 10;
+  // Lee inventario ingresado
+  let inv = {};
+  for (let ing in reqPerUnit) {
+    let val = parseFloat(document.getElementById("inv_" + ing).value) || 0;
+    inv[ing] = val;
+  }
+
+  // Calcula cuántas unidades puedes fabricar en múltiplos de 10
+  let maxUnits = Infinity;
+
+  for (let ing in reqPerUnit) {
+    // Ingredientes necesarios netos por unidad
+    // Primero calculamos neto por 1 y luego multiplicamos por 10
+    let neededFor10 = reqPerUnit[ing] * 10;
+    let netPer10 = neededFor10 * (1 - dev);
+
+    // Con tu inventario real, cuántos bloques de 10 puedes hacer
+    let possible = Math.floor(inv[ing] / netPer10);
+
+    if (possible < maxUnits) maxUnits = possible;
+  }
+
+  if (!isFinite(maxUnits)) maxUnits = 0;
+
+  let resultCount = maxUnits * 10;
+
+  // Mostrar resultado
+  let out = `<b>👉 Puedes craftear hasta:</b> <b>${resultCount}</b> comidas (múltiplos de 10)<br><br>`;
+
+  for (let ing in reqPerUnit) {
+    let neededFor10 = reqPerUnit[ing] * 10;
+    let netPer10 = neededFor10 * (1 - dev);
+    let used = netPer10 * maxUnits;
+    let diff = inv[ing] - used;
+
+    if (diff >= 0) out += `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`;
+    else out += `${ing}: 🔴 Te falta ${Math.abs(diff).toFixed(2)}<br>`;
+  }
+
+  document.getElementById("resultadoInv").innerHTML = out;
 }
+</script>
+
 
 </script>
 
@@ -376,6 +337,7 @@ function calcularMaximoConSimulacion(inventario, comida, variante, devolucion) {
 
 </body>
 </html>
+
 
 
 
