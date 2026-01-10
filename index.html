@@ -304,58 +304,67 @@ function generarInventarioInputs() {
   }
 }
 
-function calcularMaximo() {
-  const c = document.getElementById("comida2").value;
-  const v = document.getElementById("variante2").value;
-  const dev = parseFloat(document.getElementById("porDev2").value)/100;
+function calcularMaximoConSimulacion(inventario, comida, variante, devolucion) {
+  // Ingredientes base por unidad
+  const base = comidas[comida].base;
+  const newInv = Object.assign({}, inventario);
 
-  // ingredientes por 10 unidades
-  let per10 = {};
-  for (let ing in comidas[c].base) {
-    let base = comidas[c].base[ing] * 10;  // ×10 por bloque
-    per10[ing] = base * (1 - dev);         // aplicar devolución
+  // Convertimos devolución a proporción
+  const rrr = (1 - devolucion);
+
+  let bloques = 0;
+
+  // Creamos función para costo de un bloque de 10
+  function costoPorBloque(inv, comida, variante) {
+    let costo = {};
+
+    // Ingredientes base
+    for (let ing in comidas[comida].base) {
+      costo[ing] = comidas[comida].base[ing] * 10;
+    }
+
+    // Salsas o energía
+    if (variante.startsWith("a")) {
+      // Avaloniana
+      costo["Energía avaloniana"] = 90 * 10;
+      let idx = parseInt(variante.charAt(1));
+      if (idx > 0) costo[salsas[idx]] = 90 * 10;
+    } else {
+      let idx = parseInt(variante);
+      if (idx > 0) costo[salsas[idx]] = 90 * 10;
+    }
+    return costo;
   }
 
-  if (v.startsWith("a")) {
-    // Avaloniana siempre agrega energía
-    per10[energiaAvalon] = 90*10*(1-dev);
+  const costBloque = costoPorBloque(newInv, comida, variante);
 
-    let idx = parseInt(v.charAt(1));
-    if (idx > 0) per10[salsas[idx]] = 90*10*(1-dev);
-  } else {
-    let idx = parseInt(v);
-    if (idx > 0) per10[salsas[idx]] = 90*10*(1-dev);
+  // Simulación
+  while(true) {
+    // Check if can afford another bloque
+    let puede = true;
+    for (let ing in costBloque) {
+      if ((newInv[ing] || 0) < costBloque[ing] * rrr) {
+        puede = false;
+        break;
+      }
+    }
+    if (!puede) break;
+
+    // Deduce costo neto
+    for (let ing in costBloque) {
+      let deducido = costBloque[ing] * rrr;
+      newInv[ing] -= deducido;
+
+      // Devuelve parcialmente
+      newInv[ing] += costBloque[ing] * devolucion;
+    }
+
+    bloques++;
   }
 
-  // inventario actual
-  let inv = {};
-  for (let ing in per10) {
-    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value) || 0;
-  }
-
-  // calcular cuántos bloques de 10 puedes hacer
-  let maxBlocks = Infinity;
-  for (let ing in per10) {
-    let possible = Math.floor(inv[ing] / per10[ing]);
-    if (possible < maxBlocks) maxBlocks = possible;
-  }
-
-  if (!isFinite(maxBlocks)) maxBlocks = 0;
-
-  // resultado en cantidad real (bloques * 10 unidades)
-  let maxUnits = maxBlocks * 10;
-
-  let out = `<b>👉 Puedes craftear hasta:</b><br><b>${maxUnits}</b> comidas (múltiplos de 10)<br><br>`;
-
-  for (let ing in per10) {
-    let used = per10[ing] * maxBlocks;
-    let diff = inv[ing] - used;
-    if (diff >= 0) out += `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`;
-    else out += `${ing}: 🔴 Te falta ${Math.abs(diff).toFixed(2)}<br>`;
-  }
-
-  document.getElementById("resultado2").innerHTML = out;
+  return bloques * 10;
 }
+
 </script>
 
   <div class="result" id="resultado2"></div>
@@ -367,6 +376,7 @@ function calcularMaximo() {
 
 </body>
 </html>
+
 
 
 
