@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora crafteo de comidas</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,34 +11,30 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)), url("778611.jpg") center/cover no-repeat fixed;
   font-family: 'Montserrat', sans-serif;
-  background:
-    linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),
-    url("778611.jpg") center/cover no-repeat fixed;
   color: #fff;
   display: flex;
   justify-content: center;
-  align-items: start;
   padding-top: 40px;
 }
 
 .container {
   width: 100%;
-  max-width: 680px;
-  padding: 24px;
-  background: rgba(20,20,20,0.55);
+  max-width: 700px;
+  padding: 22px;
+  background: rgba(25, 25, 25, 0.7);
+  border-radius: 14px;
   backdrop-filter: blur(8px);
-  border-radius: 12px;
   box-shadow: 0 0 24px rgba(0,0,0,0.5);
 }
 
-h2 { text-align:center; color:#ffb347; }
+h2 { text-align:center; color:#ffb347; margin-bottom: 12px; }
 
 button {
   width: 100%;
   padding: 12px;
-  margin-top: 14px;
+  margin-top: 12px;
   background: rgba(255,179,71,0.85);
   border: none;
   font-weight: 700;
@@ -62,17 +58,18 @@ input, select {
   font-size: 0.95rem;
 }
 
-label { margin-top: 12px; display:block; font-size:0.9rem; }
+label { margin-top: 12px; display: block; font-size: 0.9rem; }
 
 .result {
   background: rgba(0,0,0,0.65);
   padding: 14px;
   margin-top: 14px;
   border-radius: 10px;
+  font-size: 0.95rem;
   color: #fff;
   text-shadow: 0 0 4px #000;
-  font-size: 0.95rem;
 }
+
 #firma-top {
   position: fixed;
   top: 8px;
@@ -95,13 +92,12 @@ label { margin-top: 12px; display:block; font-size:0.9rem; }
 <div id="firma-top">Creado por BLOODYPHANTOM</div>
 
 <div class="container">
-
   <h2>🧮 Calculadora crafteo de comidas</h2>
 
-  <button onclick="showSection('cantidad')">📌 Calcular por cantidad</button>
-  <button onclick="showSection('inventario')">📦 Calcular según inventario</button>
+  <button id="btnCant">📌 Calcular por cantidad</button>
+  <button id="btnInv" style="margin-bottom:10px;">📦 Calcular según inventario</button>
 
-  <!-- SECCIÓN: Calcular por cantidad -->
+  <!-- SECCIÓN 1: POR CANTIDAD -->
   <div id="section-cantidad">
     <label>Comida:</label>
     <select id="comidaCant">
@@ -122,7 +118,7 @@ label { margin-top: 12px; display:block; font-size:0.9rem; }
       <option value="a3">Avaloniana .3</option>
     </select>
 
-    <label>Cantidad (solo múltiplos de 10):</label>
+    <label>Cantidad (múltiplos de 10):</label>
     <input type="number" id="cantidadCant" placeholder="Ej: 10">
 
     <label>% Devolución:</label>
@@ -132,7 +128,7 @@ label { margin-top: 12px; display:block; font-size:0.9rem; }
     <div id="resultadoCant" class="result"></div>
   </div>
 
-  <!-- SECCIÓN: Según inventario -->
+  <!-- SECCIÓN 2: SEGÚN INVENTARIO -->
   <div id="section-inventario" style="display:none;">
     <label>Comida:</label>
     <select id="comidaInv">
@@ -165,56 +161,148 @@ label { margin-top: 12px; display:block; font-size:0.9rem; }
 </div>
 
 <script>
-// ————— Datos base —————
+// ————— Datos de comidas —————
 const comidas = {
-  tortilla: { base: { "Fardos de maíz": 36, "Carne de cerdo": 72, "Huevos de ganso": 18 } },
-  pastel:   { base: { "Fardos de maíz": 18, "Harina": 36, "Carne de cerdo": 72, "Leche de oveja": 18 } },
-  guiso:    { base: { "Calabazas": 36, "Pan": 36, "Carne de ternera": 72 } }
+  tortilla: { base: { "Fardos de maíz":36, "Carne de cerdo":72, "Huevos de ganso":18 } },
+  pastel:   { base: { "Fardos de maíz":18, "Harina":36, "Carne de cerdo":72, "Leche de oveja":18 } },
+  guiso:    { base: { "Calabazas":36, "Pan":36, "Carne de ternera":72 } }
 };
 
-const salsas = { 1: "Salsa de pescado básica", 2: "Salsa de pescado extravagante", 3: "Salsa de pescado especial" };
+const salsas = { 1:"Salsa de pescado básica", 2:"Salsa de pescado extravagante", 3:"Salsa de pescado especial" };
 const energiaAvalon = "Energía avaloniana";
 
-// ————— Navegar secciones —————
-function showSection(name) {
-  document.getElementById("section-cantidad").style.display = (name === "cantidad" ? "block" : "none");
-  document.getElementById("section-inventario").style.display = (name === "inventario" ? "block" : "none");
-  document.getElementById("resultadoCant").innerHTML = "";
-  document.getElementById("resultadoInv").innerHTML = "";
-}
+// ————— Navegar entre secciones —————
+document.getElementById("btnCant").onclick = () => {
+  document.getElementById("section-cantidad").style.display = "block";
+  document.getElementById("section-inventario").style.display = "none";
+};
+document.getElementById("btnInv").onclick = () => {
+  document.getElementById("section-cantidad").style.display = "none";
+  document.getElementById("section-inventario").style.display = "block";
+  generarInventarioInputs();
+};
 
-// ————— Calcular por cantidad —————
+// ————— FUNCIÓN: calcular por cantidad —————
 function calcularCantidad() {
   const comida = document.getElementById("comidaCant").value;
   const variante = document.getElementById("varianteCant").value;
   const cantidad = parseInt(document.getElementById("cantidadCant").value);
-  const dev = parseFloat(document.getElementById("devolucionCant").value) / 100;
+  const dev = parseFloat(document.getElementById("devolucionCant").value)/100;
 
-  if (isNaN(cantidad) || cantidad <= 0 || cantidad % 10 !== 0) {
-    return document.getElementById("resultadoCant").innerHTML = "<b>❌ Ingresa un múltiplo de 10 válido</b>";
+  if (isNaN(cantidad) || cantidad<=0 || cantidad%10!==0) {
+    document.getElementById("resultadoCant").innerHTML = "<b>❌ Ingresa un múltiplo de 10 válido</b>";
+    return;
   }
 
-  let ingrs = {};
-  for (let ing in comidas[comida].base) ingrs[ing] = comidas[comida].base[ing] * cantidad;
+  let req = {};
+  for (let ing in comidas[comida].base) req[ing] = comidas[comida].base[ing]*cantidad;
 
   if (variante.startsWith("a")) {
-    ingrs[energiaAvalon] = 90 * cantidad;
+    req[energiaAvalon] = 90*cantidad;
     let idx = parseInt(variante.charAt(1));
-    if (idx > 0) ingrs[salsas[idx]] = 90 * cantidad;
+    if (idx>0) req[salsas[idx]] = 90*cantidad;
   } else {
     let idx = parseInt(variante);
-    if (idx > 0) ingrs[salsas[idx]] = 90 * cantidad;
+    if (idx>0) req[salsas[idx]] = 90*cantidad;
   }
 
-  let html = "<b>Ingredientes necesarios:</b><br>";
-  for (let ing in ingrs) {
-    let neto = ingrs[ing] * (1 - dev);
-    html += `${ing}: <b>${neto.toFixed(2)}</b><br>`;
+  let out = "<b>Ingredientes necesarios:</b><br>";
+  for (let ing in req) {
+    let neto = req[ing]*(1-dev);
+    out += `${ing}: <b>${neto.toFixed(2)}</b><br>`;
   }
-  document.getElementById("resultadoCant").innerHTML = html;
+  document.getElementById("resultadoCant").innerHTML = out;
 }
 
 // ————— Generar inputs inventario —————
 function generarInventarioInputs() {
   const cont = document.getElementById("inventarioInputs");
+  cont.innerHTML = "";
 
+  const comida = document.getElementById("comidaInv").value;
+  const variante = document.getElementById("varianteInv").value;
+
+  for (let ing in comidas[comida].base) {
+    let inp = document.createElement("input");
+    inp.type = "number";
+    inp.placeholder = `${ing} que tienes`;
+    inp.id = "inv_"+ing;
+    cont.appendChild(inp);
+  }
+
+  if (variante.startsWith("a")) {
+    let invE = document.createElement("input");
+    invE.type = "number";
+    invE.placeholder = `${energiaAvalon} que tienes`;
+    invE.id = "inv_"+energiaAvalon;
+    cont.appendChild(invE);
+
+    let idx = parseInt(variante.charAt(1));
+    if (idx>0) {
+      let invS = document.createElement("input");
+      invS.type = "number";
+      invS.placeholder = `${salsas[idx]} que tienes`;
+      invS.id = "inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  } else {
+    let idx = parseInt(variante);
+    if (idx>0) {
+      let invS = document.createElement("input");
+      invS.type = "number";
+      invS.placeholder = `${salsas[idx]} que tienes`;
+      invS.id = "inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  }
+}
+
+// ————— Calcular según inventario —————
+function calcularInventario() {
+  const comida = document.getElementById("comidaInv").value;
+  const variante = document.getElementById("varianteInv").value;
+  const dev = parseFloat(document.getElementById("devolucionInv").value)/100;  
+  let req = {};
+
+  for (let ing in comidas[comida].base) req[ing] = comidas[comida].base[ing];
+
+  if (variante.startsWith("a")) {
+    req[energiaAvalon] = 90;
+    let idx = parseInt(variante.charAt(1));
+    if (idx>0) req[salsas[idx]] = 90;
+  } else {
+    let idx = parseInt(variante);
+    if (idx>0) req[salsas[idx]] = 90;
+  }
+
+  let inv = {};
+  for (let ing in req) {
+    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value) || 0;
+  }
+
+  let maxBlocks = Infinity;
+  for (let ing in req) {
+    let neto10 = req[ing]*(1-dev)*10;
+    let possible = Math.floor(inv[ing]/neto10);
+    if (possible<maxBlocks) maxBlocks = possible;
+  }
+  if (!isFinite(maxBlocks)) maxBlocks = 0;
+
+  let totalCom = maxBlocks*10;
+  let out = `<b>👉 Puedes craftear hasta:</b> <b>${totalCom}</b> comidas (múltiplos de 10)<br><br>`;
+
+  for (let ing in req) {
+    let neto10 = req[ing]*(1-dev)*10;
+    let used = neto10*maxBlocks;
+    let diff = inv[ing]-used;
+    out += (diff>=0
+      ? `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`
+      : `${ing}: 🔴 Falta ${Math.abs(diff).toFixed(2)}<br>`);
+  }
+
+  document.getElementById("resultadoInv").innerHTML = out;
+}
+</script>
+
+</body>
+</html>
