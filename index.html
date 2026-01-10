@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora crafteo de comidas</title>
+<title>Calculadora de Crafteo de Comidas — Albion Online</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -11,26 +11,24 @@
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)), url("778611.jpg") center/cover no-repeat fixed;
+  background:
+    linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),
+    url("778611.jpg") center/cover no-repeat fixed;
   font-family: 'Montserrat', sans-serif;
   color: #fff;
   display: flex;
   justify-content: center;
   padding-top: 40px;
 }
-
 .container {
-  width: 100%;
   max-width: 700px;
+  width: 100%;
   padding: 22px;
-  background: rgba(25, 25, 25, 0.7);
+  background: rgba(25,25,25,0.75);
   border-radius: 14px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 24px rgba(0,0,0,0.5);
 }
-
 h2 { text-align:center; color:#ffb347; margin-bottom: 12px; }
-
 button {
   width: 100%;
   padding: 12px;
@@ -38,15 +36,11 @@ button {
   background: rgba(255,179,71,0.85);
   border: none;
   font-weight: 700;
-  font-size: 1rem;
   cursor: pointer;
   color: #222;
   border-radius: 8px;
-  transition: .2s ease;
 }
-
 button:hover { background: rgba(255,179,71,1); }
-
 input, select {
   width: 100%;
   padding: 10px;
@@ -55,34 +49,28 @@ input, select {
   border: none;
   background: #333;
   color: #fff;
-  font-size: 0.95rem;
 }
-
-label { margin-top: 12px; display: block; font-size: 0.9rem; }
-
+label { margin-top: 12px; display:block; font-size:0.9rem; }
 .result {
-  background: rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.7);
   padding: 14px;
-  margin-top: 14px;
+  margin-top: 12px;
   border-radius: 10px;
   font-size: 0.95rem;
   color: #fff;
-  text-shadow: 0 0 4px #000;
 }
-
 #firma-top {
   position: fixed;
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0,0,0,0.6);
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: bold;
   color: #ffb347;
   z-index: 9999;
-  text-shadow: 0 0 4px #000;
 }
 </style>
 </head>
@@ -92,12 +80,14 @@ label { margin-top: 12px; display: block; font-size: 0.9rem; }
 <div id="firma-top">Creado por BLOODYPHANTOM</div>
 
 <div class="container">
-  <h2>🧮 Calculadora crafteo de comidas</h2>
 
+  <h2>🧮 Calculadora de Crafteo de Comidas</h2>
+
+  <!-- Botones para cambiar de sección -->
   <button id="btnCant">📌 Calcular por cantidad</button>
-  <button id="btnInv" style="margin-bottom:10px;">📦 Calcular según inventario</button>
+  <button id="btnInv">📦 Calcular según inventario</button>
 
-  <!-- SECCIÓN 1: POR CANTIDAD -->
+  <!-- SECCIÓN 1: CALCULAR POR CANTIDAD -->
   <div id="section-cantidad">
     <label>Comida:</label>
     <select id="comidaCant">
@@ -153,7 +143,6 @@ label { margin-top: 12px; display: block; font-size: 0.9rem; }
     <input type="number" id="devolucionInv" placeholder="Ej: 17.9">
 
     <div id="inventarioInputs"></div>
-
     <button onclick="calcularInventario()">🔢 Calcular según inventario</button>
     <div id="resultadoInv" class="result"></div>
   </div>
@@ -167,22 +156,21 @@ const comidas = {
   pastel:   { base: { "Fardos de maíz":18, "Harina":36, "Carne de cerdo":72, "Leche de oveja":18 } },
   guiso:    { base: { "Calabazas":36, "Pan":36, "Carne de ternera":72 } }
 };
-
-const salsas = { 1:"Salsa de pescado básica", 2:"Salsa de pescado extravagante", 3:"Salsa de pescado especial" };
+const salsas = {1:"Salsa de pescado básica",2:"Salsa de pescado extravagante",3:"Salsa de pescado especial"};
 const energiaAvalon = "Energía avaloniana";
 
-// ————— Navegar entre secciones —————
+// ————— Switch de secciones —————
 document.getElementById("btnCant").onclick = () => {
-  document.getElementById("section-cantidad").style.display = "block";
-  document.getElementById("section-inventario").style.display = "none";
+  document.getElementById("section-cantidad").style.display="block";
+  document.getElementById("section-inventario").style.display="none";
 };
 document.getElementById("btnInv").onclick = () => {
-  document.getElementById("section-cantidad").style.display = "none";
-  document.getElementById("section-inventario").style.display = "block";
+  document.getElementById("section-cantidad").style.display="none";
+  document.getElementById("section-inventario").style.display="block";
   generarInventarioInputs();
 };
 
-// ————— FUNCIÓN: calcular por cantidad —————
+// ————— Calcular por cantidad —————
 function calcularCantidad() {
   const comida = document.getElementById("comidaCant").value;
   const variante = document.getElementById("varianteCant").value;
@@ -190,31 +178,31 @@ function calcularCantidad() {
   const dev = parseFloat(document.getElementById("devolucionCant").value)/100;
 
   if (isNaN(cantidad) || cantidad<=0 || cantidad%10!==0) {
-    document.getElementById("resultadoCant").innerHTML = "<b>❌ Ingresa un múltiplo de 10 válido</b>";
+    document.getElementById("resultadoCant").innerHTML="<b>❌ Ingresa un múltiplo de 10 válido</b>";
     return;
   }
 
   let req = {};
-  for (let ing in comidas[comida].base) req[ing] = comidas[comida].base[ing]*cantidad;
+  for (let ing in comidas[comida].base) req[ing] = comidas[comida].base[ing] * cantidad;
 
   if (variante.startsWith("a")) {
-    req[energiaAvalon] = 90*cantidad;
+    req[energiaAvalon] = 90 * cantidad;
     let idx = parseInt(variante.charAt(1));
-    if (idx>0) req[salsas[idx]] = 90*cantidad;
+    if (idx>0) req[salsas[idx]] = 90 * cantidad;
   } else {
     let idx = parseInt(variante);
-    if (idx>0) req[salsas[idx]] = 90*cantidad;
+    if (idx>0) req[salsas[idx]] = 90 * cantidad;
   }
 
-  let out = "<b>Ingredientes necesarios:</b><br>";
+  let out="<b>Ingredientes necesarios (netos con devolución):</b><br>";
   for (let ing in req) {
-    let neto = req[ing]*(1-dev);
+    let neto = req[ing] * (1 - dev);
     out += `${ing}: <b>${neto.toFixed(2)}</b><br>`;
   }
   document.getElementById("resultadoCant").innerHTML = out;
 }
 
-// ————— Generar inputs inventario —————
+// ————— Generar inputs de inventario —————
 function generarInventarioInputs() {
   const cont = document.getElementById("inventarioInputs");
   cont.innerHTML = "";
@@ -222,82 +210,94 @@ function generarInventarioInputs() {
   const comida = document.getElementById("comidaInv").value;
   const variante = document.getElementById("varianteInv").value;
 
+  // Ingredientes base
   for (let ing in comidas[comida].base) {
     let inp = document.createElement("input");
-    inp.type = "number";
-    inp.placeholder = `${ing} que tienes`;
-    inp.id = "inv_"+ing;
+    inp.type="number";
+    inp.placeholder=`${ing} que tienes`;
+    inp.id="inv_"+ing;
     cont.appendChild(inp);
   }
 
+  // Ingredientes de variante
   if (variante.startsWith("a")) {
     let invE = document.createElement("input");
-    invE.type = "number";
-    invE.placeholder = `${energiaAvalon} que tienes`;
-    invE.id = "inv_"+energiaAvalon;
+    invE.type="number";
+    invE.placeholder=`${energiaAvalon} que tienes`;
+    invE.id="inv_"+energiaAvalon;
     cont.appendChild(invE);
 
-    let idx = parseInt(variante.charAt(1));
+    let idx=parseInt(variante.charAt(1));
     if (idx>0) {
-      let invS = document.createElement("input");
-      invS.type = "number";
-      invS.placeholder = `${salsas[idx]} que tienes`;
-      invS.id = "inv_"+salsas[idx];
+      let invS=document.createElement("input");
+      invS.type="number";
+      invS.placeholder=`${salsas[idx]} que tienes`;
+      invS.id="inv_"+salsas[idx];
       cont.appendChild(invS);
     }
   } else {
-    let idx = parseInt(variante);
-    if (idx>0) {
-      let invS = document.createElement("input");
-      invS.type = "number";
-      invS.placeholder = `${salsas[idx]} que tienes`;
-      invS.id = "inv_"+salsas[idx];
+    let idx=parseInt(variante);
+    if(idx>0) {
+      let invS=document.createElement("input");
+      invS.type="number";
+      invS.placeholder=`${salsas[idx]} que tienes`;
+      invS.id="inv_"+salsas[idx];
       cont.appendChild(invS);
     }
   }
 }
 
-// ————— Calcular según inventario —————
+// ————— Simulación iterativa (Albion real) —————
 function calcularInventario() {
-  const comida = document.getElementById("comidaInv").value;
-  const variante = document.getElementById("varianteInv").value;
-  const dev = parseFloat(document.getElementById("devolucionInv").value)/100;  
-  let req = {};
+  const comida=document.getElementById("comidaInv").value;
+  const variante=document.getElementById("varianteInv").value;
+  const dev=parseFloat(document.getElementById("devolucionInv").value)/100;
 
-  for (let ing in comidas[comida].base) req[ing] = comidas[comida].base[ing];
-
+  // Ingredientes por unidad
+  let reqUnit = {};
+  for (let ing in comidas[comida].base) reqUnit[ing]=comidas[comida].base[ing];
   if (variante.startsWith("a")) {
-    req[energiaAvalon] = 90;
-    let idx = parseInt(variante.charAt(1));
-    if (idx>0) req[salsas[idx]] = 90;
+    reqUnit[energiaAvalon]=90;
+    let idx=parseInt(variante.charAt(1));
+    if(idx>0) reqUnit[salsas[idx]]=90;
   } else {
-    let idx = parseInt(variante);
-    if (idx>0) req[salsas[idx]] = 90;
+    let idx=parseInt(variante);
+    if(idx>0) reqUnit[salsas[idx]]=90;
   }
 
-  let inv = {};
-  for (let ing in req) {
-    inv[ing] = parseFloat(document.getElementById("inv_"+ing).value) || 0;
+  // Inventario real
+  let inventario={};
+  for(let ing in reqUnit) {
+    inventario[ing]=parseFloat(document.getElementById("inv_"+ing).value)||0;
   }
 
-  let maxBlocks = Infinity;
-  for (let ing in req) {
-    let neto10 = req[ing]*(1-dev)*10;
-    let possible = Math.floor(inv[ing]/neto10);
-    if (possible<maxBlocks) maxBlocks = possible;
+  // Simular crafteos acumulativos
+  let totalMade=0;
+  while(true) {
+    let canCraft=true;
+    for(let ing in reqUnit) {
+      if(inventario[ing] < reqUnit[ing]*10) {
+        canCraft=false;
+        break;
+      }
+    }
+    if(!canCraft) break;
+
+    // Restar ingredientes
+    for(let ing in reqUnit) {
+      inventario[ing] -= reqUnit[ing]*10;
+    }
+    // Devolver recursos parte
+    for(let ing in reqUnit) {
+      inventario[ing] += (reqUnit[ing]*10)*dev;
+    }
+
+    totalMade += 10;
   }
-  if (!isFinite(maxBlocks)) maxBlocks = 0;
 
-  let totalCom = maxBlocks*10;
-  let out = `<b>👉 Puedes craftear hasta:</b> <b>${totalCom}</b> comidas (múltiplos de 10)<br><br>`;
-
-  for (let ing in req) {
-    let neto10 = req[ing]*(1-dev)*10;
-    let used = neto10*maxBlocks;
-    let diff = inv[ing]-used;
-    out += (diff>=0
-      ? `${ing}: 🟢 Sobra ${diff.toFixed(2)}<br>`
-      : `${ing}: 🔴 Falta ${Math.abs(diff).toFixed(2)}<br>`);
+  let out=`<b>👉 Puedes craftear hasta:</b> <b>${totalMade}</b> comidas (múltiplos de 10)<br><br>`;
+  for(let ing in inventario) {
+    out += `${ing}: 🟢 Te quedan ${inventario[ing].toFixed(2)}<br>`;
   }
 
   document.getElementById("resultadoInv").innerHTML = out;
