@@ -156,14 +156,14 @@ label {
   <!-- SECCIÓN 2: SEGÚN INVENTARIO -->
   <div id="section-inventario" style="display:none;">
     <label>Comida:</label>
-    <select id="comidaInv">
+  <select id="comidaInv" onchange="generarInventarioInputs()">
       <option value="tortilla">Tortilla de cerdo</option>
       <option value="pastel">Pastel de cerdo</option>
       <option value="guiso">Guiso de ternera</option>
     </select>
 
     <label>Variante:</label>
-    <select id="varianteInv">
+    <select id="varianteInv" onchange="generarInventarioInputs()">
       <option value="0">Plana</option>
       <option value="1">.1</option>
       <option value="2">.2</option>
@@ -407,6 +407,7 @@ function calcularInventarioSimulado() {
 
 </body>
 </html>
+
 
 
 
