@@ -99,6 +99,24 @@ label {
 
 <div class="container">
 
+  <hr style="margin:30px 0; opacity:0.3;">
+
+<h2>🏙️ Bonos según la ciudad</h2>
+
+<label>Selecciona una ciudad:</label>
+<select id="ciudadSelect" onchange="mostrarBonoCiudad()">
+  <option value="">-- Elegir ciudad --</option>
+  <option value="bridgewatch">Bridgewatch</option>
+  <option value="lymhurst">Lymhurst</option>
+  <option value="fortsterling">Fort Sterling</option>
+  <option value="martlock">Martlock</option>
+  <option value="thetford">Thetford</option>
+  <option value="caerleon">Caerleon</option>
+</select>
+
+<div id="resultadoCiudad" class="result"></div>
+
+
   <h2>🧮 Calculadora de Crafteo de Comidas</h2>
 
   <button id="btnCant">📌 Calcular por cantidad</button>
@@ -167,6 +185,66 @@ label {
 </div>
 
 <script>
+
+  // === Bonos por ciudad ===
+const bonosCiudad = {
+  bridgewatch: {
+    nombre: "Bridgewatch",
+    bono: "Refinado de piel 🐗",
+    detalle: "+ Mayor retorno al refinar cuero",
+    nota: "Ideal para cazadores y refinadores de piel"
+  },
+  lymhurst: {
+    nombre: "Lymhurst",
+    bono: "Refinado de madera 🌲",
+    detalle: "+ Mayor retorno al refinar tablas",
+    nota: "Perfecta para arcos y carpintería"
+  },
+  fortsterling: {
+    nombre: "Fort Sterling",
+    bono: "Refinado de metal ⛓️",
+    detalle: "+ Mayor retorno al refinar barras",
+    nota: "Recomendada para armaduras y armas"
+  },
+  martlock: {
+    nombre: "Martlock",
+    bono: "Refinado de piedra 🧱",
+    detalle: "+ Mayor retorno al refinar bloques",
+    nota: "Clave para construcción y ciudades"
+  },
+  thetford: {
+    nombre: "Thetford",
+    bono: "Refinado de tela 🧵",
+    detalle: "+ Mayor retorno al refinar telas",
+    nota: "Excelente para magos y túnicas"
+  },
+  caerleon: {
+    nombre: "Caerleon",
+    bono: "Sin bono de refinado",
+    detalle: "Mercado central de Albion",
+    nota: "Buena liquidez, menor eficiencia"
+  }
+};
+
+function mostrarBonoCiudad() {
+  const ciudad = document.getElementById("ciudadSelect").value;
+  const out = document.getElementById("resultadoCiudad");
+
+  if (!ciudad) {
+    out.innerHTML = "";
+    return;
+  }
+
+  const c = bonosCiudad[ciudad];
+
+  out.innerHTML = `
+    <b>📍 ${c.nombre}</b><br><br>
+    <b>🔹 Bono principal:</b> ${c.bono}<br>
+    <b>📈 Detalle:</b> ${c.detalle}<br><br>
+    <i>💡 ${c.nota}</i>
+  `;
+}
+
 // === Datos base de comidas ===
 const comidas = {
   tortilla: { base: { "Fardos de maíz":36, "Carne de cerdo":72, "Huevos de ganso":18 } },
@@ -329,5 +407,6 @@ function calcularInventarioSimulado() {
 
 </body>
 </html>
+
 
 
