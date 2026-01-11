@@ -241,9 +241,27 @@ function mostrarSeccion(id){
 }
 
 mostrarSeccion('calc');
+  // --- CONTROL DE MODOS DE CÁLCULO ---
+
+const btnCant = document.getElementById("btnCant");
+const btnInv = document.getElementById("btnInv");
+
+const sectionCantidad = document.getElementById("section-cantidad");
+const sectionInventario = document.getElementById("section-inventario");
+
+btnCant.addEventListener("click", () => {
+  sectionCantidad.style.display = "block";
+  sectionInventario.style.display = "none";
+});
+
+btnInv.addEventListener("click", () => {
+  sectionCantidad.style.display = "none";
+  sectionInventario.style.display = "block";
+});
 </script>
 
 </body>
 </html>
+
 
 
