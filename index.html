@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Albion Tools – Calculadora & Bonos</title>
+<title>Albion Tools – Crafteo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -22,7 +22,7 @@ body{
 
 .container{
   width:100%;
-  max-width:750px;
+  max-width:800px;
   background:rgba(25,25,25,.8);
   border-radius:14px;
   padding:22px;
@@ -49,10 +49,26 @@ body{
 
 .tool-section{ display:none; }
 
-h2{
-  text-align:center;
-  color:#ffb347;
+.submenu{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
 }
+
+.submenu button{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  font-weight:600;
+  background:#444;
+  color:#fff;
+  cursor:pointer;
+}
+
+.submenu button:hover{ background:#666; }
+
+h2{ text-align:center; color:#ffb347; }
 
 label{ display:block; margin-top:12px; }
 
@@ -110,15 +126,33 @@ button.action{
   <button onclick="mostrarSeccion('futuro')">🧩 Próximamente</button>
 </div>
 
-<!-- CALCULADORA -->
+<!-- ================= CALCULADORA ================= -->
 <section id="calc" class="tool-section">
+
 <h2>🧮 Calculadora de Crafteo</h2>
+
+<div class="submenu">
+  <button onclick="mostrarCalc('cantidad')">Por cantidad</button>
+  <button onclick="mostrarCalc('inventario')">Según inventario</button>
+</div>
+
+<!-- ====== POR CANTIDAD ====== -->
+<div id="calc-cantidad">
 
 <label>Comida</label>
 <select id="comidaCant">
   <option value="tortilla">Tortilla de cerdo</option>
   <option value="pastel">Pastel de cerdo</option>
   <option value="guiso">Guiso de ternera</option>
+</select>
+
+<label>Variante</label>
+<select id="varianteCant">
+  <option value="0">Plana</option>
+  <option value="1">.1</option>
+  <option value="2">.2</option>
+  <option value="3">.3</option>
+  <option value="a0">Avaloniana</option>
 </select>
 
 <label>Cantidad (múltiplos de 10)</label>
@@ -129,9 +163,39 @@ button.action{
 
 <button class="action" onclick="calcularCantidad()">Calcular</button>
 <div id="resultadoCant" class="result"></div>
+</div>
+
+<!-- ====== SEGÚN INVENTARIO ====== -->
+<div id="calc-inventario" style="display:none;">
+
+<label>Comida</label>
+<select id="comidaInv" onchange="generarInventarioInputs()">
+  <option value="tortilla">Tortilla de cerdo</option>
+  <option value="pastel">Pastel de cerdo</option>
+  <option value="guiso">Guiso de ternera</option>
+</select>
+
+<label>Variante</label>
+<select id="varianteInv" onchange="generarInventarioInputs()">
+  <option value="0">Plana</option>
+  <option value="1">.1</option>
+  <option value="2">.2</option>
+  <option value="3">.3</option>
+  <option value="a0">Avaloniana</option>
+</select>
+
+<label>% Devolución</label>
+<input type="number" id="devolucionInv">
+
+<div id="inventarioInputs"></div>
+
+<button class="action" onclick="calcularInventarioSimulado()">Calcular</button>
+<div id="resultadoInv" class="result"></div>
+</div>
+
 </section>
 
-<!-- CIUDADES -->
+<!-- ================= CIUDADES ================= -->
 <section id="ciudades" class="tool-section">
 <h2>🏙️ Bonos por ciudad</h2>
 
@@ -148,14 +212,12 @@ button.action{
 <div id="resultadoCiudad" class="result"></div>
 </section>
 
-<!-- FUTURO -->
 <section id="futuro" class="tool-section">
 <h2>🧩 Próximamente</h2>
 <div class="result">
 📌 Comparador de ciudades<br>
 📌 Simulador de ganancias<br>
-📌 Precios del mercado<br>
-📌 Builds y economía
+📌 Precios del mercado
 </div>
 </section>
 
@@ -166,6 +228,13 @@ function mostrarSeccion(id){
   document.querySelectorAll('.tool-section')
   .forEach(s=>s.style.display='none');
   document.getElementById(id).style.display='block';
+}
+
+function mostrarCalc(tipo){
+  document.getElementById("calc-cantidad").style.display =
+    tipo==="cantidad"?"block":"none";
+  document.getElementById("calc-inventario").style.display =
+    tipo==="inventario"?"block":"none";
 }
 
 mostrarSeccion('calc');
@@ -180,29 +249,12 @@ const bonosCiudad={
 };
 
 function mostrarBonoCiudad(){
-  const c=document.getElementById("ciudadSelect").value;
+  const c=ciudadSelect.value;
   if(!c) return;
-  document.getElementById("resultadoCiudad").innerHTML=
-  `<b>${c.toUpperCase()}</b><br>Bono: ${bonosCiudad[c]}`;
-}
-
-function calcularCantidad(){
-  const cant=parseInt(cantidadCant.value);
-  const dev=parseFloat(devolucionCant.value)/100;
-  if(!cant||cant%10!==0){
-    resultadoCant.innerHTML="❌ Ingresa múltiplos de 10";
-    return;
-  }
-  resultadoCant.innerHTML=`✔️ Produces ${cant} comidas con ${dev*100}% retorno`;
+  resultadoCiudad.innerHTML=`<b>${c.toUpperCase()}</b><br>Bono: ${bonosCiudad[c]}`;
 }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
 
