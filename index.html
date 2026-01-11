@@ -2,109 +2,84 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Calculadora de Crafteo – Albion Online</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Albion Online</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 body {
-  margin: 0;
-  padding: 0;
-  background:
-    linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),
-    url("778611.jpg") center/cover no-repeat fixed;
-  font-family: 'Montserrat', sans-serif;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  padding-top: 40px;
+  margin:0;
+  padding:0;
+  background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.8)),url("778611.jpg") center/cover fixed;
+  font-family:Montserrat,sans-serif;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  padding-top:40px;
 }
 
 .container {
-  width: 100%;
-  max-width: 750px;
-  padding: 22px;
-  background: rgba(25,25,25,0.75);
-  border-radius: 14px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 24px rgba(0,0,0,0.5);
+  width:100%;
+  max-width:750px;
+  background:rgba(25,25,25,.85);
+  border-radius:14px;
+  padding:22px;
 }
 
 .menu {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
 .menu button {
-  flex: 1;
-  padding: 10px;
-  background: rgba(255,179,71,0.7);
-  border: none;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
+  flex:1;
+  padding:10px;
+  background:#ffb347;
+  border:none;
+  font-weight:bold;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-.menu button:hover {
-  background: rgba(255,179,71,1);
-}
+.menu button:hover { background:#ffc36a; }
 
-h2 { text-align:center; color:#ffb347; margin-bottom: 12px; }
+h2 { text-align:center; color:#ffb347; }
 
 button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  background: rgba(255,179,71,0.85);
-  border: none;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  color: #222;
-  border-radius: 8px;
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#ffb347;
 }
 
 input, select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 8px;
-  border: none;
-  background: #333;
-  color: #fff;
+  width:100%;
+  padding:8px;
+  margin-top:6px;
+  border-radius:6px;
+  border:none;
+  background:#333;
+  color:#fff;
 }
+
+label { margin-top:10px; display:block; }
 
 .result {
-  background: rgba(0,0,0,0.7);
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-}
-
-.tool-section { display:none; }
-
-#firma-top {
-  position: fixed;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
-  padding: 6px 16px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #ffb347;
-  z-index: 9999;
+  background:#111;
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
 }
 </style>
 </head>
 
 <body>
-
-<div id="firma-top">Creado por BLOODYPHANTOM</div>
 
 <div class="container">
 
@@ -113,8 +88,9 @@ input, select {
   <button onclick="mostrarSeccion('ciudades')">🏙️ Ciudades</button>
 </div>
 
-<section id="ciudades" class="tool-section">
-<h2>🏙️ Bonos por ciudad</h2>
+<!-- ================= CIUDADES ================= -->
+<section id="ciudades" style="display:none">
+<h2>🏙️ Bonos por Ciudad</h2>
 
 <select id="ciudadSelect" onchange="mostrarBonoCiudad()">
 <option value="">-- Elegir ciudad --</option>
@@ -123,141 +99,148 @@ input, select {
 <option value="fortsterling">Fort Sterling</option>
 <option value="martlock">Martlock</option>
 <option value="thetford">Thetford</option>
-<option value="brecilien">Brecilien</option>
 <option value="caerleon">Caerleon</option>
+<option value="brecilien">Brecilien</option>
 </select>
 
 <div id="resultadoCiudad" class="result"></div>
 </section>
 
-<section id="calc" class="tool-section">
+<!-- ================= CALCULADORA ================= -->
+<section id="calc">
 
-<h2>🧮 Calculadora de Crafteo de Comidas</h2>
+<h2>🧮 Calculadora de Crafteo</h2>
 
-<button id="btnCant">📌 Calcular por cantidad</button>
-<button id="btnInv">📦 Calcular según inventario</button>
+<button id="btnCant">Calcular por cantidad</button>
+<button id="btnInv">Calcular según inventario</button>
 
+<!-- ===== CANTIDAD ===== -->
 <div id="section-cantidad">
-  <label>Comida:</label>
-  <select id="comidaCant">
-    <option value="tortilla">Tortilla de cerdo</option>
-    <option value="pastel">Pastel de cerdo</option>
-    <option value="guiso">Guiso de ternera</option>
-  </select>
+<label>Comida</label>
+<select id="comidaCant">
+<option value="tortilla">Tortilla</option>
+<option value="pastel">Pastel</option>
+<option value="guiso">Guiso</option>
+</select>
 
-  <label>Variante:</label>
-  <select id="varianteCant">
-    <option value="0">Plana</option>
-    <option value="1">.1</option>
-    <option value="2">.2</option>
-    <option value="3">.3</option>
-    <option value="a0">Avaloniana plana</option>
-    <option value="a1">Avaloniana .1</option>
-    <option value="a2">Avaloniana .2</option>
-    <option value="a3">Avaloniana .3</option>
-  </select>
+<label>Variante</label>
+<select id="varianteCant">
+<option value="0">Plana</option>
+<option value="1">.1</option>
+<option value="2">.2</option>
+<option value="3">.3</option>
+<option value="a0">Avaloniana</option>
+</select>
 
-  <label>Cantidad (múltiplos de 10):</label>
-  <input type="number" id="cantidadCant">
+<label>Cantidad</label>
+<input type="number" id="cantidadCant">
 
-  <label>% Devolución:</label>
-  <input type="number" id="devolucionCant">
+<label>% Devolución</label>
+<input type="number" id="devolucionCant">
 
-  <button onclick="calcularCantidad()">Calcular</button>
-  <div id="resultadoCant" class="result"></div>
+<button onclick="calcularCantidad()">Calcular</button>
+<div id="resultadoCant" class="result"></div>
 </div>
 
-<div id="section-inventario" style="display:none;">
-  <label>Comida:</label>
-  <select id="comidaInv" onchange="generarInventarioInputs()">
-    <option value="tortilla">Tortilla de cerdo</option>
-    <option value="pastel">Pastel de cerdo</option>
-    <option value="guiso">Guiso de ternera</option>
-  </select>
+<!-- ===== INVENTARIO ===== -->
+<div id="section-inventario" style="display:none">
+<label>Comida</label>
+<select id="comidaInv" onchange="generarInventarioInputs()">
+<option value="tortilla">Tortilla</option>
+<option value="pastel">Pastel</option>
+<option value="guiso">Guiso</option>
+</select>
 
-  <label>Variante:</label>
-  <select id="varianteInv" onchange="generarInventarioInputs()">
-    <option value="0">Plana</option>
-    <option value="1">.1</option>
-    <option value="2">.2</option>
-    <option value="3">.3</option>
-    <option value="a0">Avaloniana plana</option>
-    <option value="a1">Avaloniana .1</option>
-    <option value="a2">Avaloniana .2</option>
-    <option value="a3">Avaloniana .3</option>
-  </select>
+<label>Variante</label>
+<select id="varianteInv" onchange="generarInventarioInputs()">
+<option value="0">Plana</option>
+<option value="1">.1</option>
+<option value="2">.2</option>
+<option value="3">.3</option>
+<option value="a0">Avaloniana</option>
+</select>
 
-  <label>% Devolución:</label>
-  <input type="number" id="devolucionInv">
+<label>% Devolución</label>
+<input type="number" id="devolucionInv">
 
-  <div id="inventarioInputs"></div>
-  <button onclick="calcularInventarioSimulado()">Calcular</button>
-  <div id="resultadoInv" class="result"></div>
+<div id="inventarioInputs"></div>
+
+<button onclick="calcularInventarioSimulado()">Calcular</button>
+<div id="resultadoInv" class="result"></div>
 </div>
 
 </section>
+
 </div>
 
 <script>
-const bonosCiudad = {
-  brecilien:{
-    nombre:"Brecilien",
-    detalle:"Bono de fabricación: Bolsas y capas"
-  },
-  thetford:{
-    nombre:"Thetford",
-    detalle:"Producción: Agárico arcano, coles, gordolobo de fuego +10%<br>Refinación: Mineral +40%<br>Fabricación: Carne de cerdo +10%, Maza, Bastón natural, Bastón ígneo +15%"
-  },
-  fortsterling:{
-    nombre:"Fort Sterling",
-    detalle:"Producción: Huevos de gallina, rábanos, milenrama demoníaca, leche de oveja +10%<br>Refinación: Madera +40%<br>Fabricación: Carne de pollo, carnero +10%, Martillo, lanza, Bastón sagrado, casco de placas, armadura de tela +15%"
-  },
-  lymhurst:{
-    nombre:"Lymhurst",
-    detalle:"Producción: Zanahorias, bardana almedana, huevos de ganso, calabaza +10%<br>Refinación: Fibra +40%<br>Fabricación: Carne de ganso +10%, Espadas, arco, bastón arcano, casco y zapatos de cuero +15%"
-  },
-  bridgewatch:{
-    nombre:"Bridgewatch",
-    detalle:"Producción: Frijoles, leche de cabra, cardo de dragón, fardo de maíz +10%<br>Refinación: Piedra +40%<br>Fabricación: Carne de cabra +10%, Ballesta, daga, armadura de placa, zapatos de tela +15%"
-  },
-  martlock:{
-    nombre:"Martlock",
-    detalle:"Producción: Trigo, patatas, dedalera elusiva, leche de vaca +10%<br>Refinación: Piel +40%<br>Fabricación: Carne de ternera +10%, Hacha, vara, zapatos de placas, armas secundarias +15%"
-  },
-  caerleon:{
-    nombre:"Caerleon",
-    detalle:"Producción: Consuelda hojabrillante, cardo de dragón, gordolobo de fuego +10%<br>Fabricación: Equipo de recolección, herramientas, comida, guantes de guerra, bastón cambiaformas +15%"
-  }
+// ===== SECCIONES =====
+function mostrarSeccion(id){
+document.getElementById("calc").style.display="none";
+document.getElementById("ciudades").style.display="none";
+document.getElementById(id).style.display="block";
+}
+
+// ===== BOTONES =====
+btnCant.onclick=()=>{
+section-cantidad.style.display="block";
+section-inventario.style.display="none";
+}
+btnInv.onclick=()=>{
+section-cantidad.style.display="none";
+section-inventario.style.display="block";
+generarInventarioInputs();
+}
+
+// ===== DATOS COMIDAS =====
+const comidas={
+tortilla:{base:{"Maíz":36,"Cerdo":72}},
+pastel:{base:{"Maíz":18,"Harina":36,"Cerdo":72}},
+guiso:{base:{"Calabaza":36,"Pan":36,"Ternera":72}}
+};
+
+// ===== INVENTARIO INPUTS =====
+function generarInventarioInputs(){
+const cont=document.getElementById("inventarioInputs");
+cont.innerHTML="";
+const comida=document.getElementById("comidaInv").value;
+for(let ing in comidas[comida].base){
+let i=document.createElement("input");
+i.placeholder=ing+" disponible";
+i.id="inv_"+ing;
+i.type="number";
+cont.appendChild(i);
+}
+}
+
+// ===== CALCULAR INVENTARIO =====
+function calcularInventarioSimulado(){
+const comida=comidaInv.value;
+const dev=(parseFloat(devolucionInv.value)||0)/100;
+let base=comidas[comida].base;
+let total=Infinity;
+for(let ing in base){
+let have=parseFloat(document.getElementById("inv_"+ing).value)||0;
+total=Math.min(total,Math.floor(have/(base[ing]*(1-dev))));
+}
+resultadoInv.innerHTML="Puedes craftear: <b>"+(total*10)+"</b>";
+}
+
+// ===== CIUDADES =====
+const bonosCiudad={
+brecilien:{txt:"Bono de crafteo: Bolsas y capas"},
+caerleon:{txt:"Producción: Consuelda, Cardo dragón, Gordolobo +10%<br>Fabricación: Equipo recolección, herramientas, comida, guantes de guerra, bastón cambiaformas +15%"},
+thetford:{txt:"Producción: Agárico, coles, gordolobo +10%<br>Refinación: Mineral +40%<br>Fabricación: Carne cerdo +10%, maza, bastón natural, ígneo +15%"},
+fortsterling:{txt:"Producción: huevos, rábanos, milenrama, leche oveja +10%<br>Refinación: Madera +40%<br>Fabricación: pollo, carnero +10%, martillo, lanza, bastón sagrado, casco placas, armadura tela +15%"},
+lymhurst:{txt:"Producción: zanahoria, bardana, huevos ganso, calabaza +10%<br>Refinación: Fibra +40%<br>Fabricación: carne ganso +10%, espada, arco, arcano, casco y zapatos cuero +15%"},
+bridgewatch:{txt:"Producción: frijoles, leche cabra, cardo dragón, maíz +10%<br>Refinación: Piedra +40%<br>Fabricación: carne cabra +10%, ballesta, daga, armadura placa, zapatos tela +15%"},
+martlock:{txt:"Producción: trigo, patata, dedalera, leche vaca +10%<br>Refinación: Piel +40%<br>Fabricación: carne ternera +10%, hacha, vara, zapatos placas, offhands +15%"}
 };
 
 function mostrarBonoCiudad(){
-  const c = bonosCiudad[ciudadSelect.value];
-  resultadoCiudad.innerHTML = c ? `<b>${c.nombre}</b><br>${c.detalle}` : "";
+const c=ciudadSelect.value;
+resultadoCiudad.innerHTML=bonosCiudad[c]?.txt||"";
 }
-
-function mostrarSeccion(id){
-  document.querySelectorAll('.tool-section').forEach(s=>s.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-
-mostrarSeccion('calc');
-  // --- CONTROL DE MODOS DE CÁLCULO ---
-
-const btnCant = document.getElementById("btnCant");
-const btnInv = document.getElementById("btnInv");
-
-const sectionCantidad = document.getElementById("section-cantidad");
-const sectionInventario = document.getElementById("section-inventario");
-
-btnCant.addEventListener("click", () => {
-  sectionCantidad.style.display = "block";
-  sectionInventario.style.display = "none";
-});
-
-btnInv.addEventListener("click", () => {
-  sectionCantidad.style.display = "none";
-  sectionInventario.style.display = "block";
-});
 </script>
 
 </body>
