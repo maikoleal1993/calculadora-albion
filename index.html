@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Calculadora de Crafteo de Comidas – Albion Online</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),
+    url("778611.jpg") center/cover no-repeat fixed;
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.container {
+  width: 100%;
+  max-width: 700px;
+  padding: 22px;
+  background: rgba(25,25,25,0.75);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(0,0,0,0.5);
+}
+
+h2 { text-align:center; color:#ffb347; margin-bottom: 12px; }
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: rgba(255,179,71,0.85);
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #222;
+  border-radius: 8px;
+}
+
+button:hover {
+  background: rgba(255,179,71,1);
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: none;
+  background: #333;
+  color: #fff;
+}
+
+label {
+  margin-top: 12px;
+  display:block;
+  font-size: 0.9rem;
+}
+
+.result {
+  background: rgba(0,0,0,0.7);
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #fff;
+  text-shadow: 0 0 4px #000;
+}
+
+#firma-top {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #ffb347;
+  z-index: 9999;
+  text-shadow: 0 0 4px #000;
+}
+</style>
+</head>
+
+<body>
+
+<div id="firma-top">Creado por BLOODYPHANTOM</div>
+
+<div class="container">
+
+  <h2>🧮 Calculadora de Crafteo de Comidas</h2>
+
+  <button id="btnCant">📌 Calcular por cantidad</button>
+  <button id="btnInv">📦 Calcular según inventario</button>
+
+  <!-- SECCIÓN 1: CALCULAR POR CANTIDAD -->
+  <div id="section-cantidad">
+    <label>Comida:</label>
+    <select id="comidaCant">
+      <option value="tortilla">Tortilla de cerdo</option>
+      <option value="pastel">Pastel de cerdo</option>
+      <option value="guiso">Guiso de ternera</option>
+    </select>
+
+    <label>Variante:</label>
+    <select id="varianteCant">
+      <option value="0">Plana</option>
+      <option value="1">.1</option>
+      <option value="2">.2</option>
+      <option value="3">.3</option>
+      <option value="a0">Avaloniana plana</option>
+      <option value="a1">Avaloniana .1</option>
+      <option value="a2">Avaloniana .2</option>
+      <option value="a3">Avaloniana .3</option>
+    </select>
+
+    <label>Cantidad (múltiplos de 10):</label>
+    <input type="number" id="cantidadCant" placeholder="Ej: 10">
+
+    <label>% Devolución:</label>
+    <input type="number" id="devolucionCant" placeholder="Ej: 17.9">
+
+    <button onclick="calcularCantidad()">🔍 Calcular ingredientes</button>
+    <div id="resultadoCant" class="result"></div>
+  </div>
+
+  <!-- SECCIÓN 2: SEGÚN INVENTARIO -->
+  <div id="section-inventario" style="display:none;">
+    <label>Comida:</label>
+    <select id="comidaInv">
+      <option value="tortilla">Tortilla de cerdo</option>
+      <option value="pastel">Pastel de cerdo</option>
+      <option value="guiso">Guiso de ternera</option>
+    </select>
+
+    <label>Variante:</label>
+    <select id="varianteInv">
+      <option value="0">Plana</option>
+      <option value="1">.1</option>
+      <option value="2">.2</option>
+      <option value="3">.3</option>
+      <option value="a0">Avaloniana plana</option>
+      <option value="a1">Avaloniana .1</option>
+      <option value="a2">Avaloniana .2</option>
+      <option value="a3">Avaloniana .3</option>
+    </select>
+
+    <label>% Devolución:</label>
+    <input type="number" id="devolucionInv" placeholder="Ej: 17.9">
+
+    <div id="inventarioInputs"></div>
+    <button onclick="calcularInventarioSimulado()">🔢 Calcular según inventario</button>
+    <div id="resultadoInv" class="result"></div>
+  </div>
+
+</div>
+
+<script>
+// === Datos base de comidas ===
+const comidas = {
+  tortilla: { base: { "Fardos de maíz":36, "Carne de cerdo":72, "Huevos de ganso":18 } },
+  pastel:   { base: { "Fardos de maíz":18, "Harina":36, "Carne de cerdo":72, "Leche de oveja":18 } },
+  guiso:    { base: { "Calabazas":36, "Pan":36, "Carne de ternera":72 } }
+};
+const salsas = {1:"Salsa de pescado básica",2:"Salsa de pescado extravagante",3:"Salsa de pescado especial"};
+const energiaAvalon = "Energía avaloniana";
+
+// === Switch de secciones ===
+document.getElementById("btnCant").onclick = () => {
+  document.getElementById("section-cantidad").style.display="block";
+  document.getElementById("section-inventario").style.display="none";
+};
+document.getElementById("btnInv").onclick = () => {
+  document.getElementById("section-cantidad").style.display="none";
+  document.getElementById("section-inventario").style.display="block";
+  generarInventarioInputs();
+};
+
+// === Calcular por cantidad ===
+function calcularCantidad() {
+  const comida = document.getElementById("comidaCant").value;
+  const variante = document.getElementById("varianteCant").value;
+  const cantidad = parseInt(document.getElementById("cantidadCant").value);
+  const dev = parseFloat(document.getElementById("devolucionCant").value)/100;
+
+  if (isNaN(cantidad) || cantidad<=0 || cantidad%10!==0) {
+    document.getElementById("resultadoCant").innerHTML="<b>❌ Ingresa un múltiplo de 10 válido</b>";
+    return;
+  }
+
+  // Calcula ingredientes *por unidad real (divididos desde la receta de 10)*
+  let req = {};
+  for (let ing in comidas[comida].base) {
+    req[ing] = (comidas[comida].base[ing] / 10) * cantidad;
+  }
+
+  // Variante avaloniana
+  if (variante.startsWith("a")) {
+    req[energiaAvalon] = (90 / 10) * cantidad;
+    let idx=parseInt(variante.charAt(1));
+    if (idx>0) req[salsas[idx]] = (90 / 10) * cantidad;
+  } else {
+    let idx=parseInt(variante);
+    if(idx>0) req[salsas[idx]] = (90 / 10) * cantidad;
+  }
+
+  let out="<b>Ingredientes necesarios (netos con devolución):</b><br>";
+  for (let ing in req) {
+    let neto = req[ing] * (1 - dev);
+    out += `${ing}: <b>${neto.toFixed(2)}</b><br>`;
+  }
+  document.getElementById("resultadoCant").innerHTML = out;
+}
+
+// === Generar inputs de inventario ===
+function generarInventarioInputs() {
+  const cont=document.getElementById("inventarioInputs");
+  cont.innerHTML="";
+
+  const comida=document.getElementById("comidaInv").value;
+  const variante=document.getElementById("varianteInv").value;
+
+  // Base
+  for (let ing in comidas[comida].base) {
+    let inp=document.createElement("input");
+    inp.type="number";
+    inp.placeholder=`${ing} que tienes`;
+    inp.id="inv_"+ing;
+    cont.appendChild(inp);
+  }
+
+  // Variante avaloniana
+  if (variante.startsWith("a")) {
+    let invE=document.createElement("input");
+    invE.type="number";
+    invE.placeholder=`${energiaAvalon} que tienes`;
+    invE.id="inv_"+energiaAvalon;
+    cont.appendChild(invE);
+
+    let idx=parseInt(variante.charAt(1));
+    if(idx>0) {
+      let invS=document.createElement("input");
+      invS.type="number";
+      invS.placeholder=`${salsas[idx]} que tienes`;
+      invS.id="inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  } else {
+    let idx=parseInt(variante);
+    if(idx>0) {
+      let invS=document.createElement("input");
+      invS.type="number";
+      invS.placeholder=`${salsas[idx]} que tienes`;
+      invS.id="inv_"+salsas[idx];
+      cont.appendChild(invS);
+    }
+  }
+}
+
+// === Simulación acumulativa real (Albion Online) ===
+function calcularInventarioSimulado() {
+  const comida=document.getElementById("comidaInv").value;
+  const variante=document.getElementById("varianteInv").value;
+  const dev=parseFloat(document.getElementById("devolucionInv").value)/100;
+
+  // Ingredientes por unidad real
+  let baseUnit={};
+  for(let ing in comidas[comida].base) {
+    baseUnit[ing] = comidas[comida].base[ing]/10;
+  }
+
+  if(variante.startsWith("a")) {
+    baseUnit[energiaAvalon] = 90/10;
+    let idx=parseInt(variante.charAt(1));
+    if(idx>0) baseUnit[salsas[idx]] = 90/10;
+  } else {
+    let idx=parseInt(variante);
+    if(idx>0) baseUnit[salsas[idx]] = 90/10;
+  }
+
+  // Inventario real
+  let invReal={};
+  for(let ing in baseUnit) {
+    invReal[ing] = parseFloat(document.getElementById("inv_"+ing).value) || 0;
+  }
+
+  let totalCraft = 0;
+
+  while(true) {
+    let canMake=true;
+    for(let ing in baseUnit) {
+      if(invReal[ing] < baseUnit[ing]*10) {
+        canMake=false;
+        break;
+      }
+    }
+    if(!canMake) break;
+
+    for(let ing in baseUnit) {
+      invReal[ing] -= baseUnit[ing]*10;
+    }
+
+    for(let ing in baseUnit) {
+      invReal[ing] += (baseUnit[ing]*10)*dev;
+    }
+
+    totalCraft += 10;
+  }
+
+  let out=`<b>👉 Puedes craftear hasta:</b> <b>${totalCraft}</b> comidas (múltiplos de 10)<br><br>`;
+  for(let ing in invReal) {
+    out += `${ing}: 🟢 Te quedan ${invReal[ing].toFixed(2)}<br>`;
+  }
+
+  document.getElementById("resultadoInv").innerHTML = out;
+}
+
+
+</body>
+</html>
+
+
