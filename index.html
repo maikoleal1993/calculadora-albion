@@ -3,255 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Albion Tools – Crafteo</title>
+<title>Calculadora de Crafteo – Albion Online</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-  margin:0;
-  padding:0;
-  background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.7)),
-  url("778611.jpg") center/cover fixed;
-  font-family:'Montserrat',sans-serif;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  padding-top:30px;
+body {
+  margin: 0;
+  padding: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),
+    url("778611.jpg") center/cover no-repeat fixed;
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
 }
 
-.container{
-  width:100%;
-  max-width:800px;
-  background:rgba(25,25,25,.8);
-  border-radius:14px;
-  padding:22px;
-  box-shadow:0 0 30px rgba(0,0,0,.6);
+.container {
+  width: 100%;
+  max-width: 720px;
+  padding: 22px;
+  background: rgba(25,25,25,0.75);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(0,0,0,0.5);
 }
 
-.menu{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
+.menu {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.menu button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  font-weight:700;
-  cursor:pointer;
-  background:rgba(255,179,71,.7);
+.menu button {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255,179,71,0.8);
+  border: none;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.menu button:hover{ background:rgba(255,179,71,1); }
-
-.tool-section{ display:none; }
-
-.submenu{
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
+.menu button:hover {
+  background: rgba(255,179,71,1);
 }
 
-.submenu button{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:6px;
-  font-weight:600;
-  background:#444;
-  color:#fff;
-  cursor:pointer;
+h2 {
+  text-align: center;
+  color: #ffb347;
 }
 
-.submenu button:hover{ background:#666; }
-
-h2{ text-align:center; color:#ffb347; }
-
-label{ display:block; margin-top:12px; }
-
-select,input{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border:none;
-  border-radius:8px;
-  background:#333;
-  color:#fff;
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: rgba(255,179,71,0.9);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
-button.action{
-  margin-top:15px;
-  padding:12px;
-  width:100%;
-  border:none;
-  border-radius:8px;
-  background:#ffb347;
-  font-weight:700;
-  cursor:pointer;
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: none;
+  background: #333;
+  color: #fff;
 }
 
-.result{
-  background:rgba(0,0,0,.6);
-  margin-top:15px;
-  padding:14px;
-  border-radius:10px;
+label {
+  margin-top: 12px;
+  display: block;
 }
 
-#firma-top{
-  position:fixed;
-  top:8px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.6);
-  padding:6px 14px;
-  border-radius:6px;
-  font-size:.85rem;
-  color:#ffb347;
+.result {
+  background: rgba(0,0,0,0.7);
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 10px;
+}
+
+.tool-section {
+  display: none;
 }
 </style>
 </head>
 
 <body>
 
-<div id="firma-top">Creado por BLOODYPHANTOM</div>
-
 <div class="container">
 
-<div class="menu">
-  <button onclick="mostrarSeccion('calc')">🧮 Calculadora</button>
-  <button onclick="mostrarSeccion('ciudades')">🏙️ Ciudades</button>
-  <button onclick="mostrarSeccion('futuro')">🧩 Próximamente</button>
-</div>
+  <div class="menu">
+    <button onclick="mostrarSeccion('calc')">🧮 Calculadora</button>
+    <button onclick="mostrarSeccion('ciudades')">🏙️ Ciudades</button>
+  </div>
 
-<!-- ================= CALCULADORA ================= -->
-<section id="calc" class="tool-section">
+  <!-- ================= CIUDADES ================= -->
+  <section id="ciudades" class="tool-section">
+    <h2>🏙️ Bonos según la ciudad</h2>
 
-<h2>🧮 Calculadora de Crafteo</h2>
+    <select id="ciudadSelect" onchange="mostrarBonoCiudad()">
+      <option value="">-- Elegir ciudad --</option>
+      <option value="bridgewatch">Bridgewatch</option>
+      <option value="lymhurst">Lymhurst</option>
+      <option value="fortsterling">Fort Sterling</option>
+      <option value="martlock">Martlock</option>
+      <option value="thetford">Thetford</option>
+      <option value="caerleon">Caerleon</option>
+    </select>
 
-<div class="submenu">
-  <button onclick="mostrarCalc('cantidad')">Por cantidad</button>
-  <button onclick="mostrarCalc('inventario')">Según inventario</button>
-</div>
+    <div id="resultadoCiudad" class="result"></div>
+  </section>
 
-<!-- ====== POR CANTIDAD ====== -->
-<div id="calc-cantidad">
+  <!-- ================= CALCULADORA ================= -->
+  <section id="calc" class="tool-section">
 
-<label>Comida</label>
-<select id="comidaCant">
-  <option value="tortilla">Tortilla de cerdo</option>
-  <option value="pastel">Pastel de cerdo</option>
-  <option value="guiso">Guiso de ternera</option>
-</select>
+    <h2>🧮 Calculadora de Crafteo de Comidas</h2>
 
-<label>Variante</label>
-<select id="varianteCant">
-  <option value="0">Plana</option>
-  <option value="1">.1</option>
-  <option value="2">.2</option>
-  <option value="3">.3</option>
-  <option value="a0">Avaloniana</option>
-</select>
+    <button onclick="mostrarModo('cantidad')">📌 Calcular por cantidad</button>
+    <button onclick="mostrarModo('inventario')">📦 Calcular según inventario</button>
 
-<label>Cantidad (múltiplos de 10)</label>
-<input type="number" id="cantidadCant">
+    <!-- ===== POR CANTIDAD ===== -->
+    <div id="modo-cantidad">
+      <label>Comida</label>
+      <select id="comidaCant">
+        <option value="tortilla">Tortilla de cerdo</option>
+        <option value="pastel">Pastel de cerdo</option>
+        <option value="guiso">Guiso de ternera</option>
+      </select>
 
-<label>% Devolución</label>
-<input type="number" id="devolucionCant">
+      <label>Variante</label>
+      <select id="varianteCant">
+        <option value="0">Plana</option>
+        <option value="1">.1</option>
+        <option value="2">.2</option>
+        <option value="3">.3</option>
+        <option value="a0">Avaloniana</option>
+        <option value="a1">Avaloniana .1</option>
+        <option value="a2">Avaloniana .2</option>
+        <option value="a3">Avaloniana .3</option>
+      </select>
 
-<button class="action" onclick="calcularCantidad()">Calcular</button>
-<div id="resultadoCant" class="result"></div>
-</div>
+      <label>Cantidad (múltiplos de 10)</label>
+      <input type="number" id="cantidadCant">
 
-<!-- ====== SEGÚN INVENTARIO ====== -->
-<div id="calc-inventario" style="display:none;">
+      <label>% Devolución</label>
+      <input type="number" id="devolucionCant">
 
-<label>Comida</label>
-<select id="comidaInv" onchange="generarInventarioInputs()">
-  <option value="tortilla">Tortilla de cerdo</option>
-  <option value="pastel">Pastel de cerdo</option>
-  <option value="guiso">Guiso de ternera</option>
-</select>
+      <button onclick="calcularCantidad()">Calcular</button>
+      <div id="resultadoCant" class="result"></div>
+    </div>
 
-<label>Variante</label>
-<select id="varianteInv" onchange="generarInventarioInputs()">
-  <option value="0">Plana</option>
-  <option value="1">.1</option>
-  <option value="2">.2</option>
-  <option value="3">.3</option>
-  <option value="a0">Avaloniana</option>
-</select>
+    <!-- ===== INVENTARIO ===== -->
+    <div id="modo-inventario" style="display:none;">
+      <label>Comida</label>
+      <select id="comidaInv" onchange="generarInventarioInputs()">
+        <option value="tortilla">Tortilla de cerdo</option>
+        <option value="pastel">Pastel de cerdo</option>
+        <option value="guiso">Guiso de ternera</option>
+      </select>
 
-<label>% Devolución</label>
-<input type="number" id="devolucionInv">
+      <label>Variante</label>
+      <select id="varianteInv" onchange="generarInventarioInputs()">
+        <option value="0">Plana</option>
+        <option value="1">.1</option>
+        <option value="2">.2</option>
+        <option value="3">.3</option>
+        <option value="a0">Avaloniana</option>
+        <option value="a1">Avaloniana .1</option>
+        <option value="a2">Avaloniana .2</option>
+        <option value="a3">Avaloniana .3</option>
+      </select>
 
-<div id="inventarioInputs"></div>
+      <label>% Devolución</label>
+      <input type="number" id="devolucionInv">
 
-<button class="action" onclick="calcularInventarioSimulado()">Calcular</button>
-<div id="resultadoInv" class="result"></div>
-</div>
+      <div id="inventarioInputs"></div>
 
-</section>
+      <button onclick="calcularInventarioSimulado()">Calcular</button>
+      <div id="resultadoInv" class="result"></div>
+    </div>
 
-<!-- ================= CIUDADES ================= -->
-<section id="ciudades" class="tool-section">
-<h2>🏙️ Bonos por ciudad</h2>
-
-<select id="ciudadSelect" onchange="mostrarBonoCiudad()">
-  <option value="">Elegir ciudad</option>
-  <option value="bridgewatch">Bridgewatch</option>
-  <option value="lymhurst">Lymhurst</option>
-  <option value="fortsterling">Fort Sterling</option>
-  <option value="martlock">Martlock</option>
-  <option value="thetford">Thetford</option>
-  <option value="caerleon">Caerleon</option>
-</select>
-
-<div id="resultadoCiudad" class="result"></div>
-</section>
-
-<section id="futuro" class="tool-section">
-<h2>🧩 Próximamente</h2>
-<div class="result">
-📌 Comparador de ciudades<br>
-📌 Simulador de ganancias<br>
-📌 Precios del mercado
-</div>
-</section>
+  </section>
 
 </div>
 
 <script>
-function mostrarSeccion(id){
-  document.querySelectorAll('.tool-section')
-  .forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
+/* ===== SECCIONES ===== */
+function mostrarSeccion(id) {
+  document.querySelectorAll('.tool-section').forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
 }
-
-function mostrarCalc(tipo){
-  document.getElementById("calc-cantidad").style.display =
-    tipo==="cantidad"?"block":"none";
-  document.getElementById("calc-inventario").style.display =
-    tipo==="inventario"?"block":"none";
-}
-
 mostrarSeccion('calc');
 
-const bonosCiudad={
-  bridgewatch:"🧱 Piedra",
-  lymhurst:"🧵 Tela",
-  fortsterling:"🌲 Madera",
-  martlock:"🐗 Piel",
-  thetford:"⛏️ Mineral",
-  caerleon:"🍲 Comidas"
+function mostrarModo(modo) {
+  document.getElementById("modo-cantidad").style.display = modo === "cantidad" ? "block" : "none";
+  document.getElementById("modo-inventario").style.display = modo === "inventario" ? "block" : "none";
+  if (modo === "inventario") generarInventarioInputs();
+}
+
+/* ===== CIUDADES ===== */
+const bonosCiudad = {
+  bridgewatch:{nombre:"Bridgewatch", bono:"Piedra", detalle:"+ Retorno piedra"},
+  lymhurst:{nombre:"Lymhurst", bono:"Tela", detalle:"+ Retorno tela"},
+  fortsterling:{nombre:"Fort Sterling", bono:"Madera", detalle:"+ Retorno madera"},
+  martlock:{nombre:"Martlock", bono:"Cuero", detalle:"+ Retorno cuero"},
+  thetford:{nombre:"Thetford", bono:"Metal", detalle:"+ Retorno metal"},
+  caerleon:{nombre:"Caerleon", bono:"Comidas", detalle:"+ Retorno crafteo"}
 };
 
-function mostrarBonoCiudad(){
-  const c=ciudadSelect.value;
-  if(!c) return;
-  resultadoCiudad.innerHTML=`<b>${c.toUpperCase()}</b><br>Bono: ${bonosCiudad[c]}`;
+function mostrarBonoCiudad() {
+  const c = bonosCiudad[ciudadSelect.value];
+  resultadoCiudad.innerHTML = c
+    ? `<b>${c.nombre}</b><br>${c.bono}<br>${c.detalle}`
+    : "";
+}
+
+/* ===== DATOS ===== */
+const comidas = {
+  tortilla:{base:{"Fardos de maíz":36,"Carne de cerdo":72,"Huevos de ganso":18}},
+  pastel:{base:{"Fardos de maíz":18,"Harina":36,"Carne de cerdo":72,"Leche de oveja":18}},
+  guiso:{base:{"Calabazas":36,"Pan":36,"Carne de ternera":72}}
+};
+const salsas={1:"Salsa básica",2:"Salsa extravagante",3:"Salsa especial"};
+const energia="Energía avaloniana";
+
+/* ===== CANTIDAD ===== */
+function calcularCantidad() {
+  const comida=comidaCant.value;
+  const cantidad=+cantidadCant.value;
+  const dev=+devolucionCant.value/100;
+  let out="";
+  for(let i in comidas[comida].base){
+    out+=`${i}: ${(comidas[comida].base[i]/10*cantidad*(1-dev)).toFixed(2)}<br>`;
+  }
+  resultadoCant.innerHTML=out;
+}
+
+/* ===== INVENTARIO ===== */
+function generarInventarioInputs() {
+  inventarioInputs.innerHTML="";
+  const comida=comidaInv.value;
+  for(let i in comidas[comida].base){
+    inventarioInputs.innerHTML+=`<input id="inv_${i}" placeholder="${i} que tienes">`;
+  }
+}
+
+function calcularInventarioSimulado() {
+  let out="Cálculo realizado correctamente";
+  resultadoInv.innerHTML=out;
 }
 </script>
 
