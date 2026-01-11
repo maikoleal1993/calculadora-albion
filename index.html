@@ -8,46 +8,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
+body{
   margin:0;
   padding:0;
-  background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.8)),url("778611.jpg") center/cover fixed;
+  background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.8));
   font-family:Montserrat,sans-serif;
   color:#fff;
   display:flex;
   justify-content:center;
   padding-top:40px;
 }
-
-.container {
+.container{
   width:100%;
-  max-width:750px;
-  background:rgba(25,25,25,.85);
+  max-width:760px;
+  background:rgba(25,25,25,.9);
   border-radius:14px;
   padding:22px;
 }
-
-.menu {
+.menu{
   display:flex;
   gap:10px;
   margin-bottom:20px;
 }
-
-.menu button {
+.menu button{
   flex:1;
   padding:10px;
   background:#ffb347;
   border:none;
-  font-weight:bold;
   border-radius:8px;
+  font-weight:bold;
   cursor:pointer;
 }
-
-.menu button:hover { background:#ffc36a; }
-
-h2 { text-align:center; color:#ffb347; }
-
-button {
+h2{text-align:center;color:#ffb347}
+button{
   width:100%;
   padding:10px;
   margin-top:10px;
@@ -57,8 +50,7 @@ button {
   cursor:pointer;
   background:#ffb347;
 }
-
-input, select {
+input,select{
   width:100%;
   padding:8px;
   margin-top:6px;
@@ -67,10 +59,8 @@ input, select {
   background:#333;
   color:#fff;
 }
-
-label { margin-top:10px; display:block; }
-
-.result {
+label{display:block;margin-top:10px}
+.result{
   background:#111;
   padding:12px;
   border-radius:8px;
@@ -123,15 +113,6 @@ label { margin-top:10px; display:block; }
 <option value="guiso">Guiso</option>
 </select>
 
-<label>Variante</label>
-<select id="varianteCant">
-<option value="0">Plana</option>
-<option value="1">.1</option>
-<option value="2">.2</option>
-<option value="3">.3</option>
-<option value="a0">Avaloniana</option>
-</select>
-
 <label>Cantidad</label>
 <input type="number" id="cantidadCant">
 
@@ -151,15 +132,6 @@ label { margin-top:10px; display:block; }
 <option value="guiso">Guiso</option>
 </select>
 
-<label>Variante</label>
-<select id="varianteInv" onchange="generarInventarioInputs()">
-<option value="0">Plana</option>
-<option value="1">.1</option>
-<option value="2">.2</option>
-<option value="3">.3</option>
-<option value="a0">Avaloniana</option>
-</select>
-
 <label>% Devolución</label>
 <input type="number" id="devolucionInv">
 
@@ -174,77 +146,86 @@ label { margin-top:10px; display:block; }
 </div>
 
 <script>
-// ===== SECCIONES =====
+// ===== CAMBIO DE SECCIONES =====
 function mostrarSeccion(id){
-document.getElementById("calc").style.display="none";
-document.getElementById("ciudades").style.display="none";
-document.getElementById(id).style.display="block";
+  document.getElementById("calc").style.display="none";
+  document.getElementById("ciudades").style.display="none";
+  document.getElementById(id).style.display="block";
 }
 
-// ===== BOTONES =====
-btnCant.onclick=()=>{
-section-cantidad.style.display="block";
-section-inventario.style.display="none";
-}
-btnInv.onclick=()=>{
-section-cantidad.style.display="none";
-section-inventario.style.display="block";
-generarInventarioInputs();
-}
-
-// ===== DATOS COMIDAS =====
-const comidas={
-tortilla:{base:{"Maíz":36,"Cerdo":72}},
-pastel:{base:{"Maíz":18,"Harina":36,"Cerdo":72}},
-guiso:{base:{"Calabaza":36,"Pan":36,"Ternera":72}}
+// ===== BOTONES CORRECTOS =====
+document.getElementById("btnCant").onclick = function(){
+  document.getElementById("section-cantidad").style.display="block";
+  document.getElementById("section-inventario").style.display="none";
 };
 
-// ===== INVENTARIO INPUTS =====
+document.getElementById("btnInv").onclick = function(){
+  document.getElementById("section-cantidad").style.display="none";
+  document.getElementById("section-inventario").style.display="block";
+  generarInventarioInputs();
+};
+
+// ===== DATOS =====
+const comidas={
+  tortilla:{base:{Maiz:36,Cerdo:72}},
+  pastel:{base:{Maiz:18,Harina:36,Cerdo:72}},
+  guiso:{base:{Calabaza:36,Pan:36,Ternera:72}}
+};
+
+// ===== INVENTARIO =====
 function generarInventarioInputs(){
-const cont=document.getElementById("inventarioInputs");
-cont.innerHTML="";
-const comida=document.getElementById("comidaInv").value;
-for(let ing in comidas[comida].base){
-let i=document.createElement("input");
-i.placeholder=ing+" disponible";
-i.id="inv_"+ing;
-i.type="number";
-cont.appendChild(i);
-}
+  const cont=document.getElementById("inventarioInputs");
+  cont.innerHTML="";
+  const comida=document.getElementById("comidaInv").value;
+  for(let ing in comidas[comida].base){
+    let i=document.createElement("input");
+    i.type="number";
+    i.placeholder=ing+" disponible";
+    i.id="inv_"+ing;
+    cont.appendChild(i);
+  }
 }
 
-// ===== CALCULAR INVENTARIO =====
 function calcularInventarioSimulado(){
-const comida=comidaInv.value;
-const dev=(parseFloat(devolucionInv.value)||0)/100;
-let base=comidas[comida].base;
-let total=Infinity;
-for(let ing in base){
-let have=parseFloat(document.getElementById("inv_"+ing).value)||0;
-total=Math.min(total,Math.floor(have/(base[ing]*(1-dev))));
-}
-resultadoInv.innerHTML="Puedes craftear: <b>"+(total*10)+"</b>";
+  const comida=document.getElementById("comidaInv").value;
+  const dev=(parseFloat(document.getElementById("devolucionInv").value)||0)/100;
+  let base=comidas[comida].base;
+  let max=Infinity;
+
+  for(let ing in base){
+    let have=parseFloat(document.getElementById("inv_"+ing).value)||0;
+    max=Math.min(max,Math.floor(have/(base[ing]*(1-dev))));
+  }
+  document.getElementById("resultadoInv").innerHTML="Puedes craftear: <b>"+(max*10)+"</b>";
 }
 
-// ===== CIUDADES =====
+function calcularCantidad(){
+  const comida=document.getElementById("comidaCant").value;
+  const cant=parseInt(document.getElementById("cantidadCant").value);
+  const dev=(parseFloat(document.getElementById("devolucionCant").value)||0)/100;
+  let out="";
+  for(let ing in comidas[comida].base){
+    out+=`${ing}: ${(comidas[comida].base[ing]/10*cant*(1-dev)).toFixed(2)}<br>`;
+  }
+  document.getElementById("resultadoCant").innerHTML=out;
+}
+
+// ===== BONOS POR CIUDADES =====
 const bonosCiudad={
-brecilien:{txt:"Bono de crafteo: Bolsas y capas"},
-caerleon:{txt:"Producción: Consuelda, Cardo dragón, Gordolobo +10%<br>Fabricación: Equipo recolección, herramientas, comida, guantes de guerra, bastón cambiaformas +15%"},
-thetford:{txt:"Producción: Agárico, coles, gordolobo +10%<br>Refinación: Mineral +40%<br>Fabricación: Carne cerdo +10%, maza, bastón natural, ígneo +15%"},
-fortsterling:{txt:"Producción: huevos, rábanos, milenrama, leche oveja +10%<br>Refinación: Madera +40%<br>Fabricación: pollo, carnero +10%, martillo, lanza, bastón sagrado, casco placas, armadura tela +15%"},
-lymhurst:{txt:"Producción: zanahoria, bardana, huevos ganso, calabaza +10%<br>Refinación: Fibra +40%<br>Fabricación: carne ganso +10%, espada, arco, arcano, casco y zapatos cuero +15%"},
-bridgewatch:{txt:"Producción: frijoles, leche cabra, cardo dragón, maíz +10%<br>Refinación: Piedra +40%<br>Fabricación: carne cabra +10%, ballesta, daga, armadura placa, zapatos tela +15%"},
-martlock:{txt:"Producción: trigo, patata, dedalera, leche vaca +10%<br>Refinación: Piel +40%<br>Fabricación: carne ternera +10%, hacha, vara, zapatos placas, offhands +15%"}
+  brecilien:"Bono de crafteo: Bolsas y capas",
+  caerleon:"Producción: Consuelda, Cardo dragón, Gordolobo +10%<br>Fabricación: equipo recolección, herramientas, comida, guantes de guerra, bastón cambiaformas +15%",
+  thetford:"Producción: Agárico, coles, gordolobo +10%<br>Refinación: Mineral +40%",
+  fortsterling:"Producción: huevos, rábanos, leche oveja +10%<br>Refinación: Madera +40%",
+  lymhurst:"Producción: zanahoria, bardana, huevos ganso +10%<br>Refinación: Fibra +40%",
+  bridgewatch:"Producción: frijoles, leche cabra +10%<br>Refinación: Piedra +40%",
+  martlock:"Producción: trigo, patata +10%<br>Refinación: Piel +40%"
 };
 
 function mostrarBonoCiudad(){
-const c=ciudadSelect.value;
-resultadoCiudad.innerHTML=bonosCiudad[c]?.txt||"";
+  const c=document.getElementById("ciudadSelect").value;
+  document.getElementById("resultadoCiudad").innerHTML=bonosCiudad[c]||"";
 }
 </script>
 
 </body>
 </html>
-
-
-
